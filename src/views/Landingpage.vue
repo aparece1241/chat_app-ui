@@ -18,8 +18,5 @@ export default {
 
 <style scoped>
     #container {
-        width: 100%;
-        height: 100%;
-        background-color: chartreuse;
     }
 </style>

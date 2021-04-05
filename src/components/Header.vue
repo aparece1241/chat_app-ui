@@ -1,11 +1,15 @@
 <template>
     <div id="header">
-        <p id="logo">Let's Talk</p>
-        <div id="navs">
-            <span class="nav-item">Sign up</span>
-            <span class="nav-item">Sign in</span>
-            <span class="nav-item">Services</span>
-            <span class="nav-item">About</span>
+        <div id="container">
+            <div id="logo">
+                <span id="logo-text">Let's Talk</span>
+            </div>
+            <div id="navs">
+                <span class="nav-item">Sign up</span>
+                <span class="nav-item">Sign in</span>
+                <span class="nav-item">About</span>
+                <span class="nav-item">Services</span>
+            </div>
         </div>
     </div>
 </template>
@@ -18,34 +22,45 @@ export default {
 
 <style scoped>
     #header {
-        background-color: #755139;
-        align-items: center;
         position: fixed;
-        width:100%;
-        height: 70px;
-        padding: 0px 10px;
+        width: 100%;
+        width: -webkit-fill-available;
+        width: -moz-fill-available;
+        width: -o-fill-available;
+        width: -ms-fill-available;
+        width: fill-available;
+        padding: 0px 20px;
+        display: grid;
         color: #F2EDD7;
+        background-color: #755139;   
         font-weight: 600;
-        box-shadow: 0px 3px 15px gray;
+        box-shadow: 0px 2px 5px gray;
     }
 
+    #container {
+        display: grid;
+        grid-template-columns: 1fr 1fr;     
+        align-items: center;
+    }
+
+    /* #navs {
+        pass
+    } */
+
     #logo {
-        width: 40%;
-        float: left;
-        margin-top: 20px;
-        font-weight: bold;
-        font-size: 1.5em !important;
+        font-size: 35px;
     }
 
     .nav-item {
         float: right;
-        padding-top: 25px;
-        margin-right: 25px;
+        margin-left: 25px;
         cursor: pointer;
     }
-    
-    #navs {
-        width: 50%;
-        float: right;
+
+    @media screen and (min-width: 1024px) {
+        #container {
+            justify-self: center;
+            width: 1444px;
+        }
     }
 </style>
