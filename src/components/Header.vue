@@ -10,6 +10,13 @@
                 <span class="nav-item">About</span>
                 <span class="nav-item">Services</span>
             </div>
+
+            <div id="ghost-navs">
+                <p class="">Sign up</p>
+                <p class="">Sign in</p>
+                <p class="">About</p>
+                <p class="">Services</p>
+            </div>
         </div>
     </div>
 </template>
@@ -35,6 +42,7 @@ export default {
         background-color: #755139;   
         font-weight: 600;
         box-shadow: 0px 2px 5px gray;
+        height: 70px;
     }
 
     #container {
@@ -43,12 +51,13 @@ export default {
         align-items: center;
     }
 
-    /* #navs {
-        pass
-    } */
-
     #logo {
         font-size: 35px;
+    }
+
+    #ghost-navs {
+        color: black;
+        display: none;
     }
 
     .nav-item {
@@ -63,4 +72,11 @@ export default {
             width: 1444px;
         }
     }
+
+    @media screen and (max-width: 450px) {
+        #navs {
+            display: none;
+        }
+    }
+
 </style>
