@@ -74,9 +74,14 @@ export default {
   align-items: center;
 }
 
-#logo {
+#logo-text {
   font-size: 1.5em;
   cursor: pointer;
+  padding: 0px;
+}
+
+#navs {
+  height: 70px;
 }
 
 #button-cont {
@@ -161,7 +166,7 @@ export default {
   }
 }
 
-@media screen and (max-width: 690px) {
+@media screen and (max-width: 700px) {
   #navs {
     display: none;
   }
