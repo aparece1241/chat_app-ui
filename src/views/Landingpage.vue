@@ -103,26 +103,27 @@ export default {
 
 @media screen and (max-width: 700px) {
   #cont {
-    grid-template-columns: 1fr;
-    width: 100%;
+    display: block;
+    width: 100vw;
     justify-items: center;
     height: auto;
   }
 
   .division {
-    border: solid 4px;
+    width: 100%;
+    border: solid pink 1px;
   }
 
   #ft-picture-1 {
     width: 100%;
+    /* width: 70%; */
     margin: 0px;
   }
 
   #tag-cont {
-    border: solid pink 1px;
     width: 100vw;
     text-align: center;
-    margin: 20px;
+    margin: 0px;
   }
 }
 </style>
