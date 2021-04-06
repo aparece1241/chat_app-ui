@@ -2,8 +2,14 @@
   <div id="wrapper">
     <Header />
     <div id="cont">
-      <div class="division" id="division-1">test</div>
-      <div class="division" id="division-2">test</div>
+      <div class="division" id="division-1">
+          <div id="test">
+           <p>Connecting People</p>
+          </div>
+      </div>
+      <div class="division" id="division-2">
+         <img id="ft-picture-1"  src="@/assets/img/img-display.png" alt="">
+      </div>
     </div>
   </div>
 </template>
@@ -21,23 +27,32 @@ export default {
 
 <style scoped>
 #cont {
-  margin-top: 70px;
+  margin-top: 55px;
   display: grid;
   grid-template-columns: 1fr 1fr;
   align-items: center;
-  height: cal(100vh - 70px);
+  height: 100vh;
   width: 100%;
 }
 
 .division {
-  width: 100%;
-  height: 100%;
   text-align: center;
   border: solid 1px green;
 }
 
+#test {
+    border: salmon solid 2px;
+    margin: 2em;
+    text-align: justify;
+    width: 18em;
+}
+
+#ft-picture-1 {
+    width: 20em;
+    height: 23em;
+}
+
 #division-1 {
-  text-align: justify;
 }
 
 #division-2 {
