@@ -116,8 +116,8 @@ export default {
 
   #ft-picture-1 {
     width: 100%;
-    /* width: 70%; */
     margin: 0px;
+    object-fit: scale-down;
   }
 
   #tag-cont {
