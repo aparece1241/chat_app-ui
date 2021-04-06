@@ -3,8 +3,11 @@
     <Header />
     <div id="cont">
       <div class="division" id="division-1">
-          <div id="test">
-           <p>Connecting People</p>
+          <div id="tag-cont">
+           <p id="head-line">Connecting People</p>
+           <p class="sub-head-line">Connecting People around the</p><p class="sub-head-line"> world through messages</p>
+
+            <button id="get-started-btn">Get Started</button>
           </div>
       </div>
       <div class="division" id="division-2">
@@ -26,6 +29,41 @@ export default {
 </script>
 
 <style scoped>
+#get-started-btn {
+  margin: 20px 0px;
+  width: 150px;
+  height: 30px;
+  border: none;
+  color: #f2edd7;
+  background-color: #755139;
+  border-radius: 8px;
+  box-shadow: 1px 3px 5px gray;
+  cursor: pointer;
+}
+
+#get-started-btn:hover {
+  opacity: 0.5;
+  border: solid 1px #755139;
+}
+
+#division-2 {
+  justify-self: left;
+}
+
+#division-1 {
+  justify-self: right;
+}
+
+.sub-head-line {
+  font-weight: 200;
+  margin: 10px 0px;
+}
+
+#head-line {
+  font-weight: bold;
+  font-size: 3em;
+}
+
 #cont {
   margin-top: 55px;
   display: grid;
@@ -37,25 +75,19 @@ export default {
 
 .division {
   text-align: center;
-  border: solid 1px green;
 }
 
-#test {
-    border: salmon solid 2px;
-    margin: 2em;
+#tag-cont {
+    margin: 5em;
     text-align: justify;
     width: 18em;
+    color: #755139;
 }
 
 #ft-picture-1 {
     width: 20em;
     height: 23em;
-}
-
-#division-1 {
-}
-
-#division-2 {
+    margin: 0px 8em;
 }
 
 @media screen and (min-width: 1444px) {
@@ -66,6 +98,31 @@ export default {
   #wrapper {
     display: grid;
     justify-items: center;
+  }
+}
+
+@media screen and (max-width: 700px) {
+  #cont {
+    grid-template-columns: 1fr;
+    width: 100%;
+    justify-items: center;
+    height: auto;
+  }
+
+  .division {
+    border: solid 4px;
+  }
+
+  #ft-picture-1 {
+    width: 100%;
+    margin: 0px;
+  }
+
+  #tag-cont {
+    border: solid pink 1px;
+    width: 100vw;
+    text-align: center;
+    margin: 20px;
   }
 }
 </style>

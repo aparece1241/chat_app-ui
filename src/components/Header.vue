@@ -56,7 +56,7 @@ export default {
   width: -moz-fill-available;
   width: -o-fill-available;
   width: -ms-fill-available;
-  width: fill-available;
+  width: stretch;
   padding: 0px 20px;
   display: grid;
   color: #f2edd7;
