@@ -1,16 +1,9 @@
 <template>
   <div id="wrapper">
     <Header />
-    <div id="container">
-      <div class="division" id="division-1">
-          <h1 class="head-name">Connecting People</h1>
-          <p class="sub-head-name">Connecting People Around the World Through Messages</p>
-      </div>
-      <div class="division" id="division-2">
-        <img src="@/assets/img/img-display.png" alt="">
-      </div>
-    </div>
-    <div id="contents">
+    <div id="cont">
+      <div class="division" id="division-1">test</div>
+      <div class="division" id="division-2">test</div>
     </div>
   </div>
 </template>
@@ -27,18 +20,20 @@ export default {
 </script>
 
 <style scoped>
-#container {
+#cont {
   margin-top: 70px;
   display: grid;
   grid-template-columns: 1fr 1fr;
-  justify-items: center;
   align-items: center;
-  height: 100vh;
+  height: cal(100vh - 70px);
+  width: 100%;
 }
 
 .division {
   width: 100%;
+  height: 100%;
   text-align: center;
+  border: solid 1px green;
 }
 
 #division-1 {
@@ -49,9 +44,13 @@ export default {
 }
 
 @media screen and (min-width: 1444px) {
-  #container {
-    justify-self: center;
+  #cont {
     width: 1444px;
+  }
+
+  #wrapper {
+    display: grid;
+    justify-items: center;
   }
 }
 </style>
