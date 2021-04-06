@@ -1,7 +1,9 @@
 <template>
-    <div id="container">
-        <Header />
-        This the landing page
+    <div id="wrapper">
+    <Header />
+        <div id="container">
+            <span>This the landing page</span>
+        </div>
     </div>
 </template>
 
@@ -17,5 +19,7 @@ export default {
 </script>
 
 <style scoped>
-    
+    #container {
+        margin-top: 70px;
+    }
 </style>
