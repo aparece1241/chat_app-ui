@@ -108,6 +108,7 @@ export default {
 }
 
 #ghost-navs {
+  display: none;
   color: black;
   position: fixed;
   right: 0;
@@ -119,6 +120,7 @@ export default {
   border-radius: 2px;
   z-index: 1;
   animation: slide 0.5s 1;
+  padding: 20px 10px;
 }
 
 .ghost-nav-item {
@@ -128,7 +130,7 @@ export default {
   text-align: center;
   margin-bottom: 0px;
   padding: 10px;
-  margin: 0px 0px;
+  margin-right: 20px;
 }
 
 .ghost-nav-item:hover {
@@ -166,9 +168,13 @@ export default {
   }
 }
 
-@media screen and (max-width: 700px) {
+@media screen and (max-width: 900px) {
   #navs {
     display: none;
+  }
+
+  #ghost-navs {
+    display: block;
   }
 
   #button-cont {
