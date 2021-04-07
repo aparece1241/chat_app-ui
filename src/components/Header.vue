@@ -5,7 +5,7 @@
         <span id="logo-text">Let's Talk</span>
       </div>
       <div id="navs">
-        <span class="nav-item">Sign up</span>
+        <router-link to="/sign-up"><span class="nav-item">Sign up</span></router-link>
         <router-link to="/sign-in"><span class="nav-item">Sign in</span></router-link>
         <span class="nav-item">About</span>
         <span class="nav-item">Services</span>
@@ -100,6 +100,7 @@ export default {
   float: right;
   cursor: pointer;
   padding: 24px 25px;
+   color: #f2edd7;
 }
 
 .nav-item:hover {

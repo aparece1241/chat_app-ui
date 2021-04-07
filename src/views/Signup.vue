@@ -6,7 +6,7 @@
           <img src="@/assets/img/message-signup.png" id="img-sign-up" alt="" />
           <p id="text-saying">Comunication is what makes a team strong</p>
           <p id="sub-head">Already had an account?, Click sign in</p>
-          <button id="sign-in" class="button">Sign in</button>
+          <router-link to="/sign-in"><button id="sign-in" class="button">Sign in</button></router-link>
         </div>
       </div>
       <div id="division-2" class="division">
@@ -80,14 +80,14 @@ export default {
 }
 
 #text-saying {
-  font-weight: 700;
+  font-weight: 900;
   font-size: larger;
 }
 
 #sub-head {
   font-weight: 500;
   font-size: small;
-  margin-top: 70px;
+  margin-top: 60px;
 }
 
 .button {
