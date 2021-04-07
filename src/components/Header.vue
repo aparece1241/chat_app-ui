@@ -6,7 +6,7 @@
       </div>
       <div id="navs">
         <span class="nav-item">Sign up</span>
-        <span class="nav-item">Sign in</span>
+        <router-link to="/sign-in"><span class="nav-item">Sign in</span></router-link>
         <span class="nav-item">About</span>
         <span class="nav-item">Services</span>
       </div>
