@@ -10,7 +10,7 @@
           />
           <p id="head-line">Start Connecting Now</p>
           <p id="sub-head-line">Haven't joined yet?</p>
-          <button class="button" id="join-now">Join now</button>
+          <router-link to="/sign-up"><button class="button" id="join-now">Join now</button></router-link>
         </div>
       </div>
       <div id="division-2" class="division">
