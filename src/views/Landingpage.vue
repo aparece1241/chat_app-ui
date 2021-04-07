@@ -3,15 +3,16 @@
     <Header />
     <div id="cont">
       <div class="division" id="division-1">
-          <div id="tag-cont">
-           <p id="head-line">Connecting People</p>
-           <p class="sub-head-line">Connecting People around the</p><p class="sub-head-line"> world through messages</p>
+        <div id="tag-cont">
+          <p id="head-line">Connecting People</p>
+          <p class="sub-head-line">Connecting People around the</p>
+          <p class="sub-head-line">world through messages</p>
 
-            <button id="get-started-btn">Get Started</button>
-          </div>
+          <button id="get-started-btn">Get Started</button>
+        </div>
       </div>
       <div class="division" id="division-2">
-         <img id="ft-picture-1"  src="@/assets/img/img-display.png" alt="">
+        <img id="ft-picture-1" src="@/assets/img/img-display.png" alt="" />
       </div>
     </div>
   </div>
@@ -65,12 +66,17 @@ export default {
 }
 
 #cont {
-  margin-top: 55px;
+  margin-top: 35px !important;
   display: grid;
   grid-template-columns: 1fr 1fr;
   align-items: center;
-  height: 100vh;
   width: 100%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
 }
 
 .division {
@@ -78,30 +84,31 @@ export default {
 }
 
 #tag-cont {
-    margin: 5em;
-    text-align: justify;
-    width: 18em;
-    color: #755139;
+  margin: 5em;
+  text-align: justify;
+  width: 18em;
+  color: #755139;
 }
 
 #ft-picture-1 {
-    width: 20em;
-    height: 23em;
-    margin: 0px 8em;
+  width: 20em;
+  height: 23em;
+  margin: 0px 8em;
 }
 
 @media screen and (min-width: 1444px) {
   #cont {
-    width: 1444px;
+    width: 100%;
   }
 
   #wrapper {
+    width: 1444px;
     display: grid;
     justify-items: center;
   }
 }
 
-@media screen and (max-width: 700px) {
+@media screen and (max-width: 900px) {
   #cont {
     display: block;
     width: 100vw;
@@ -111,13 +118,16 @@ export default {
 
   .division {
     width: 100%;
-    border: solid pink 1px;
   }
 
   #ft-picture-1 {
     width: 100%;
     margin: 0px;
     object-fit: scale-down;
+  }
+
+  #head-line {
+    margin-top: 500px;
   }
 
   #tag-cont {
