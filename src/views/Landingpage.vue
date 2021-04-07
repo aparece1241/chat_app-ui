@@ -67,12 +67,17 @@ export default {
 }
 
 #cont {
-  margin-top: 55px;
+  margin-top: 35px !important;
   display: grid;
   grid-template-columns: 1fr 1fr;
   align-items: center;
-  height: 100vh;
   width: 100%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
 }
 
 .division {
@@ -94,21 +99,17 @@ export default {
 
 @media screen and (min-width: 1444px) {
   #cont {
-    width: 1444px;
+    width: 100%;
   }
 
   #wrapper {
+    width: 1444px;
     display: grid;
     justify-items: center;
   }
 }
 
-@media screen and (max-width: 700px) {
-  #wrapper {
-    display: block;
-    width: 100vw;
-  }
-
+@media screen and (max-width: 900px) {
   #cont {
     display: block;
     width: 100vw;
@@ -127,7 +128,7 @@ export default {
   }
 
   #head-line {
-    margin-top: 88px;
+    margin-top: 500px;
   }
 
   #tag-cont {
