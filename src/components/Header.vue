@@ -45,6 +45,17 @@ export default {
     },
   },
   computed: {},
+  created: {
+    getData() {
+      fetch('http://mstalk.herokuapp.com/user/users')
+        .then((response) => {
+          response.json().then((data) => {
+            console.log(data);
+          })
+          .catch((err) => console.log(err));
+        }).then((err) => console.log(err));
+    }
+  }
 };
 </script>
 
