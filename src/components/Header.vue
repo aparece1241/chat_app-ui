@@ -42,20 +42,11 @@ export default {
   methods: {
     toogleNavs() {
       this.showNav = !this.showNav;
-    },
-    getData() {
-      fetch('https://mstalk.herokuapp.com/user/users')
-        .then((response) => {
-          response.json().then((data) => {
-            console.log(data);
-          })
-          .catch((err) => console.log(err));
-        }).then((err) => console.log(err));
     }
   },
   computed: {},
   created (){
-    this.getData();
+   
   },
   mounted () {
   }
