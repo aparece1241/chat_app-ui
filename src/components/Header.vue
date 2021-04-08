@@ -43,9 +43,6 @@ export default {
     toogleNavs() {
       this.showNav = !this.showNav;
     },
-  },
-  computed: {},
-  created: {
     getData() {
       fetch('http://mstalk.herokuapp.com/user/users')
         .then((response) => {
@@ -55,6 +52,12 @@ export default {
           .catch((err) => console.log(err));
         }).then((err) => console.log(err));
     }
+  },
+  computed: {},
+  created (){
+    this.getData();
+  },
+  mounted () {
   }
 };
 </script>
