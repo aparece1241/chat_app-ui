@@ -44,7 +44,7 @@ export default {
       this.showNav = !this.showNav;
     },
     getData() {
-      fetch('http://mstalk.herokuapp.com/user/users')
+      fetch('https://mstalk.herokuapp.com/user/users')
         .then((response) => {
           response.json().then((data) => {
             console.log(data);
