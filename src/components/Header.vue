@@ -123,6 +123,7 @@ export default {
 #username {
   justify-self: start;
   margin: 0px 7px;
+  cursor: pointer;
 }
 
 #search-btn {
@@ -153,6 +154,7 @@ export default {
 
 #status-img-wrapper {
   position: relative;
+  cursor: pointer;
 }
 
 #user-img {
