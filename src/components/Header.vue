@@ -1,13 +1,29 @@
 <template>
   <div id="header">
-    <div class="containerv2" v-if="!user.username">
+    <div class="containerv2" v-if="user.username">
       <div id="logo">
         <span id="logo-text">mstalk</span>
       </div>
       <div id="search-cont">
-        <input type="text" />
+        <InputField
+          type="text"
+          placeholder="search . . ."
+          name="search"
+          v-bind:className="['search-input']"
+        />
+        <button id="search-btn">
+          <span><i class="fa fa-search" aria-hidden="true"></i></span>
+        </button>
       </div>
-      <div id="user-img">test</div>
+      <div id="user-img">
+        <div id="status-img-wrapper">
+          <img src="@/assets/img/default.png" alt="" id="user-profile-img" />
+          <div id="online-status"></div>
+        </div>
+        <span id="username"
+          >Hello harvey<i class="fa fa-sort-desc" aria-hidden="true"></i
+        ></span>
+      </div>
 
       <div id="button-cont">
         <span id="bar-btn" v-on:click="toogleNavs"
@@ -30,7 +46,7 @@
       </div>
     </div>
 
-    <div class="container" v-if="user.username">
+    <div class="container" v-if="!user.username">
       <div id="logo">
         <span id="logo-text">mstalk</span>
       </div>
@@ -70,10 +86,13 @@
 
 <script>
 import store from "../store/index";
+import InputField from "../components/InputField";
 
 export default {
   name: "Header",
-  components: {},
+  components: {
+    InputField,
+  },
   data() {
     return {
       showNav: false,
@@ -94,6 +113,73 @@ export default {
 </script>
 
 <style scoped>
+/* If there is a user authenticated start*/
+.fa-sort-down:before,
+.fa-sort-desc:before {
+  margin: 0px 5px;
+  font-size: 21px;
+}
+
+#username {
+  justify-self: start;
+  margin: 0px 7px;
+}
+
+#search-btn {
+  border: none;
+  margin: 0px 2px;
+  border-radius: 5px;
+  width: 43px;
+  cursor: pointer;
+  background-color: #755139;
+  border: solid 1px #f2edd7;
+  color: #f2edd7;
+}
+
+#search-btn:hover {
+  color: #755139;
+  background-color: #f2edd7;
+}
+
+.search-input {
+  width: 100%;
+  border-radius: 5px;
+}
+
+#search-cont {
+  display: grid;
+  grid-template-columns: 1fr 0.2fr;
+}
+
+#status-img-wrapper {
+  position: relative;
+}
+
+#user-img {
+  display: grid;
+  align-items: center;
+  justify-items: end;
+  grid-template-columns: 1fr 1fr;
+}
+
+#online-status {
+  position: absolute;
+  width: 12px;
+  height: 12px;
+  background-color: rgb(58, 207, 58);
+  bottom: 4px;
+  right: 2px;
+  border-radius: 7px;
+}
+
+#user-profile-img {
+  border: solid 2px #f2edd7;
+  background-color: white;
+  width: 48px;
+  height: 48px;
+  border-radius: 30px;
+}
+
 a {
   text-decoration: none;
 }
@@ -117,15 +203,16 @@ a {
   top: 0;
 }
 
+.containerv2 {
+  display: grid;
+  grid-template-columns: 0.3fr 1fr 0.5fr;
+  align-items: center;
+}
+/* If there is a user aouthenticated end */
+
 .container {
   display: grid;
   grid-template-columns: 1fr 1fr;
-  align-items: center;
-}
-
-.containerv2 {
-  display: grid;
-  grid-template-columns: 0.5fr 1fr 0.5fr;
   align-items: center;
 }
 
@@ -181,12 +268,11 @@ a {
 
 .ghost-nav-item {
   cursor: pointer;
-  border: solid 1px #755139;
-  width: 100%;
+  border: none;
+  width: 87%;
   text-align: center;
-  margin-bottom: 0px;
+  margin: 2px 0px;
   padding: 10px;
-  margin-right: 20px;
   color: #755139;
   text-decoration: none;
 }
@@ -194,8 +280,9 @@ a {
 .ghost-nav-item:hover {
   background-color: #755139;
   color: #f2edd7;
-  border: solid 1px #f2edd7;
 }
+
+/* Media Queries start */
 
 @keyframes slide {
   from {
@@ -216,7 +303,8 @@ a {
 }
 
 @media screen and (min-width: 1444px) {
-  .container, .containerv2 {
+  .container,
+  .containerv2 {
     justify-self: center;
     width: 1444px;
   }
@@ -227,7 +315,16 @@ a {
 }
 
 @media screen and (max-width: 900px) {
+  .containerv2 {
+    grid-template-columns: 1fr 1fr;
+  }
+
   #navs {
+    display: none;
+  }
+
+  #search-cont,
+  #user-img {
     display: none;
   }
 
@@ -239,4 +336,5 @@ a {
     display: block;
   }
 }
+/* Media Queries end */
 </style>

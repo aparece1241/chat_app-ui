@@ -10,18 +10,16 @@
           />
           <p id="head-line">Start Connecting Now</p>
           <p id="sub-head-line">Haven't joined yet?</p>
-          <router-link to="/sign-up"><button class="button" id="join-now">Join now</button></router-link>
+          <router-link to="/sign-up"
+            ><button class="button" id="join-now">Join now</button></router-link
+          >
         </div>
       </div>
       <div id="division-2" class="division">
         <form>
           <p id="sign-in-text">Sign in</p>
-          <div class="input-cont">
-            <input type="text" class="inputs" placeholder="Username" />
-          </div>
-          <div class="input-cont">
-            <input type="password" class="inputs" placeholder="Password" />
-          </div>
+          <InputField name="username" placeholder="Username" v-bind:className="['input-field']"/>
+          <InputField name="password" placeholder="Password" v-bind:className="['input-field']"/>
           <button class="button" id="sign-in">Sign in</button>
         </form>
       </div>
@@ -30,12 +28,21 @@
 </template>
 
 <script>
+import InputField from "../components/InputField";
+
 export default {
   name: "Signin",
+  components: {
+    InputField,
+  },
 };
 </script>
 
 <style scoped>
+.input-field {
+  margin: 25px 0px;
+}
+
 #img-sign-in {
   height: 170px;
   width: 163px;
@@ -48,21 +55,6 @@ export default {
 #sign-in:hover {
   opacity: 0.5;
   border: solid 1px #755139;
-}
-
-.input-cont {
-  width: 15em;
-  height: 40px;
-  margin: 25px 0px;
-  background-color: white;
-}
-
-.inputs {
-  border-radius: 5px;
-  border: none;
-  width: 80%;
-  height: stretch;
-  outline: none;
 }
 
 #sign-in-text {

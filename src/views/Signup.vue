@@ -12,19 +12,10 @@
       <div id="division-2" class="division">
         <form action="">
           <p id="text-sign-up">Sign up</p>
-          <div class="input-cont">
-            <input type="text" class="inputs" placeholder="First Name" />
-          </div>
-          <div class="input-cont">
-            <input type="text" class="inputs" placeholder="Last Name" />
-          </div>
-          <div class="input-cont">
-            <input type="text" class="inputs" placeholder="Username" />
-          </div>
-          <div class="input-cont">
-            <input type="text" class="inputs" placeholder="Password" />
-          </div>
-
+          <InputField name="first_name" placeholder="First Name" v-bind:className="['input-field']"/>
+          <InputField name="last_name" placeholder="Last Name" v-bind:className="['input-field']"/>
+          <InputField name="username" placeholder="Username" v-bind:className="['input-field']"/>
+          <InputField name="password" placeholder="Password" v-bind:className="['input-field']"/>
           <button class="button" id="sign-up-btn">Sign up</button>
         </form>
       </div>
@@ -33,12 +24,21 @@
 </template>
 
 <script>
+import InputField from '../components/InputField';
+
 export default {
   name: "Sign-up",
+  components: {
+    InputField
+  }
 };
 </script>
 
 <style scoped>
+.input-field {
+  margin: 25px 0px;
+}
+
 #wrapper {
   position: fixed;
   background: linear-gradient(to bottom right, #927059, #f2edd7);
@@ -113,21 +113,6 @@ export default {
 #sign-in:hover {
   background-color: #927059;
   color: #f2edd7;
-}
-
-.input-cont {
-  width: 15em;
-  height: 40px;
-  margin: 25px 0px;
-  background-color: white;
-}
-
-.inputs {
-  border-radius: 5px;
-  border: none;
-  width: 80%;
-  height: stretch;
-  outline: none;
 }
 
 #sign-up-btn {

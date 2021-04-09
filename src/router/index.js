@@ -49,7 +49,6 @@ router.beforeEach((to, from, next) => {
   const DEFAUT_TITLE = 'mstalk'
   document.title = DEFAUT_TITLE
   if(to.meta.title) {
-    console.log(from);
     document.title = `${DEFAUT_TITLE} | ${to.meta.title}`
   }
   next();
