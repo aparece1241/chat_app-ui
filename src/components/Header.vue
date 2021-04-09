@@ -1,12 +1,46 @@
 <template>
   <div id="header">
-    <div id="container">
+    <div class="containerv2" v-if="!user.username">
+      <div id="logo">
+        <span id="logo-text">mstalk</span>
+      </div>
+      <div id="search-cont">
+        <input type="text" />
+      </div>
+      <div id="user-img">test</div>
+
+      <div id="button-cont">
+        <span id="bar-btn" v-on:click="toogleNavs"
+          ><i
+            v-bind:class="[showNav ? 'fa fa-times' : 'fa fa-bars']"
+            aria-hidden="true"
+          ></i
+        ></span>
+      </div>
+
+      <div id="ghost-navs" v-show="showNav">
+        <p class="ghost-nav-item">Services</p>
+        <p class="ghost-nav-item">About</p>
+        <router-link to="/sign-ip"
+          ><p class="ghost-nav-item">Sign in</p></router-link
+        >
+        <router-link to="/sign-up"
+          ><p class="ghost-nav-item">Sign up</p></router-link
+        >
+      </div>
+    </div>
+
+    <div class="container" v-if="user.username">
       <div id="logo">
         <span id="logo-text">mstalk</span>
       </div>
       <div id="navs">
-        <router-link to="/sign-up"><span class="nav-item">Sign up</span></router-link>
-        <router-link to="/sign-in"><span class="nav-item">Sign in</span></router-link>
+        <router-link to="/sign-up"
+          ><span class="nav-item">Sign up</span></router-link
+        >
+        <router-link to="/sign-in"
+          ><span class="nav-item">Sign in</span></router-link
+        >
         <span class="nav-item">About</span>
         <span class="nav-item">Services</span>
       </div>
@@ -23,33 +57,39 @@
       <div id="ghost-navs" v-show="showNav">
         <p class="ghost-nav-item">Services</p>
         <p class="ghost-nav-item">About</p>
-        <router-link to="/sign-ip"><p class="ghost-nav-item">Sign in</p></router-link>
-        <router-link to="/sign-up"><p class="ghost-nav-item">Sign up</p></router-link>
+        <router-link to="/sign-ip"
+          ><p class="ghost-nav-item">Sign in</p></router-link
+        >
+        <router-link to="/sign-up"
+          ><p class="ghost-nav-item">Sign up</p></router-link
+        >
       </div>
     </div>
   </div>
 </template>
 
 <script>
+import store from "../store/index";
+
 export default {
   name: "Header",
   components: {},
   data() {
     return {
       showNav: false,
+      user: {},
     };
   },
   methods: {
     toogleNavs() {
       this.showNav = !this.showNav;
-    }
+    },
   },
   computed: {},
-  created (){
-   
+  created() {
+    this.user = store.getters.getUserState;
   },
-  mounted () {
-  }
+  mounted() {},
 };
 </script>
 
@@ -77,9 +117,15 @@ a {
   top: 0;
 }
 
-#container {
+.container {
   display: grid;
   grid-template-columns: 1fr 1fr;
+  align-items: center;
+}
+
+.containerv2 {
+  display: grid;
+  grid-template-columns: 0.5fr 1fr 0.5fr;
   align-items: center;
 }
 
@@ -109,7 +155,7 @@ a {
   float: right;
   cursor: pointer;
   padding: 24px 25px;
-   color: #f2edd7;
+  color: #f2edd7;
 }
 
 .nav-item:hover {
@@ -170,7 +216,7 @@ a {
 }
 
 @media screen and (min-width: 1444px) {
-  #container {
+  .container, .containerv2 {
     justify-self: center;
     width: 1444px;
   }
