@@ -2,7 +2,7 @@
   <div id="header">
     <div id="container">
       <div id="logo">
-        <span id="logo-text">Let's Talk</span>
+        <span id="logo-text">mstalk</span>
       </div>
       <div id="navs">
         <router-link to="/sign-up"><span class="nav-item">Sign up</span></router-link>
@@ -23,8 +23,8 @@
       <div id="ghost-navs" v-show="showNav">
         <p class="ghost-nav-item">Services</p>
         <p class="ghost-nav-item">About</p>
-        <p class="ghost-nav-item">Sign in</p>
-        <p class="ghost-nav-item">Sign up</p>
+        <router-link to="/sign-ip"><p class="ghost-nav-item">Sign in</p></router-link>
+        <router-link to="/sign-up"><p class="ghost-nav-item">Sign up</p></router-link>
       </div>
     </div>
   </div>
@@ -54,6 +54,10 @@ export default {
 </script>
 
 <style scoped>
+a {
+  text-decoration: none;
+}
+
 #header {
   position: fixed;
   width: 100%;
@@ -137,6 +141,8 @@ export default {
   margin-bottom: 0px;
   padding: 10px;
   margin-right: 20px;
+  color: #755139;
+  text-decoration: none;
 }
 
 .ghost-nav-item:hover {

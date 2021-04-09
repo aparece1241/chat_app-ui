@@ -22,6 +22,7 @@
 import Header from "../components/Header.vue";
 
 export default {
+  title: 'mstalk',
   name: "Landingpage",
   components: {
     Header,
