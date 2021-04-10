@@ -20,13 +20,13 @@
             }"
           />
           <div class="icon-btn-cont">
+            <button class="button" id="emoji">
+              <span><i class="fa fa-smile-o" aria-hidden="true"></i></span>
+            </button>
             <button class="button" id="send">
               <span
                 ><i class="fa fa-paper-plane-o" aria-hidden="true"></i
               ></span>
-            </button>
-            <button class="button" id="emoji">
-              <span><i class="fa fa-smile-o" aria-hidden="true"></i></span>
             </button>
           </div>
         </div>
