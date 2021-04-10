@@ -1,10 +1,12 @@
 <template>
-  <div class="input-cont" v-bind:style="addStyle" v-bind:class="className">
+  <div class="input-cont" v-bind:class="className">
     <input 
         v-bind:type="type" 
         v-bind:placeholder="placeholder" 
         v-bind:name="name" 
-        class="inputs"/>
+        v-bind:class="['inputs']"
+        v-bind:style="inputClass"
+        />
   </div>
 </template>
 
@@ -13,7 +15,7 @@ export default {
   name: "InputField",
   props: {
     type: { type: String, default: "text" },
-    addStyle: { type: Object},
+    inputClass: { type: Object},
     placeholder: { type: String, default: "Input field" },
     name: { type: String, required: true },
     className: { type: Array},

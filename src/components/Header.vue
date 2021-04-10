@@ -130,7 +130,6 @@ export default {
     },
     toggleCollapsible() {
       this.showCollapsible = !this.showCollapsible;
-      console.log(this.showCollapsible);
     },
   },
   computed: {},
@@ -161,6 +160,7 @@ export default {
   right: 13%;
   box-shadow: 1px 0px 5px grey;
   border-radius: 5px;
+  animation: fade-in 1s 1;
 }
 
 #wrapper-sub-nav {
