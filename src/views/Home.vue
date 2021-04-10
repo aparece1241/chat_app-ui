@@ -1,7 +1,9 @@
 <template>
   <div class="home">
     <Header />
-    <h2>This is home</h2>
+      <div id="container">
+        
+      </div>
   </div>
 </template>
 

@@ -19,7 +19,7 @@
         <form>
           <p id="sign-in-text">Sign in</p>
           <InputField name="username" placeholder="Username" v-bind:className="['input-field']"/>
-          <InputField name="password" placeholder="Password" v-bind:className="['input-field']"/>
+          <InputField name="password" type="password" placeholder="Password" v-bind:className="['input-field']"/>
           <button class="button" id="sign-in">Sign in</button>
         </form>
       </div>

@@ -1,5 +1,6 @@
 <template>
   <div id="header">
+    <!-- If there is ang authenticated user -->
     <div class="containerv2" v-if="user.username">
       <div id="logo">
         <span id="logo-text">mstalk</span>
@@ -7,7 +8,7 @@
       <div id="search-cont">
         <InputField
           type="text"
-          placeholder="search . . ."
+          placeholder="Search . . ."
           name="search"
           v-bind:className="['search-input']"
         />
@@ -15,16 +16,17 @@
           <span><i class="fa fa-search" aria-hidden="true"></i></span>
         </button>
       </div>
-      <div id="user-img">
-        <div id="status-img-wrapper">
-          <img src="@/assets/img/default.png" alt="" id="user-profile-img" />
+      <div class="user-img" v-on:click="toggleCollapsible">
+        <div class="status-img-wrapper">
+          <img src="@/assets/img/default.png" alt="" class="user-profile-img" />
           <div id="online-status"></div>
         </div>
-        <span id="username"
-          >Hello harvey<i class="fa fa-sort-desc" aria-hidden="true"></i
-        ></span>
+        <span class="username">Hello {{ user.username }}</span>
+        <div id="dropdown" v-show="showCollapsible">
+          <p class="ghost-nav-item">My Profile</p>
+          <p class="ghost-nav-item">Sign out</p>
+        </div>
       </div>
-
       <div id="button-cont">
         <span id="bar-btn" v-on:click="toogleNavs"
           ><i
@@ -35,6 +37,27 @@
       </div>
 
       <div id="ghost-navs" v-show="showNav">
+        <div
+          class="ghost-nav-item"
+          id="ghost-img-cont"
+          v-on:click="toggleCollapsible"
+        >
+          <div class="status-img-wrapper">
+            <img
+              src="@/assets/img/default.png"
+              class="user-profile-img"
+              id="ghost-img"
+            />
+            <div id="online-status"></div>
+          </div>
+          <span class="username" id="ghost-img-nav"
+            >Hello {{ user.username }}</span
+          >
+        </div>
+        <div id="wrapper-sub-nav" v-show="showCollapsible">
+          <p class="ghost-nav-item">My Profile</p>
+          <p class="ghost-nav-item">Sign out</p>
+        </div>
         <p class="ghost-nav-item">Services</p>
         <p class="ghost-nav-item">About</p>
         <router-link to="/sign-ip"
@@ -46,6 +69,7 @@
       </div>
     </div>
 
+    <!-- If there is no authenticated user -->
     <div class="container" v-if="!user.username">
       <div id="logo">
         <span id="logo-text">mstalk</span>
@@ -96,12 +120,17 @@ export default {
   data() {
     return {
       showNav: false,
+      showCollapsible: false,
       user: {},
     };
   },
   methods: {
     toogleNavs() {
       this.showNav = !this.showNav;
+    },
+    toggleCollapsible() {
+      this.showCollapsible = !this.showCollapsible;
+      console.log(this.showCollapsible);
     },
   },
   computed: {},
@@ -114,13 +143,47 @@ export default {
 
 <style scoped>
 /* If there is a user authenticated start*/
-.fa-sort-down:before,
+/* .fa-sort-down:before,
 .fa-sort-desc:before {
   margin: 0px 5px;
   font-size: 21px;
 }
 
-#username {
+.fa-sort-desc:before:hover {
+  background-color: #f2edd7;
+  color: #755139;
+}  */
+#dropdown {
+  position: absolute;
+  border: solid 1px #f2edd7;
+  width: 49%;
+  top: 63px;
+  right: 13%;
+  box-shadow: 1px 0px 5px grey;
+  border-radius: 5px;
+}
+
+#wrapper-sub-nav {
+  animation: fade-in 1s 1;
+  font-weight: 300;
+}
+
+#ghost-img {
+  width: 30px !important;
+  height: 30px !important;
+}
+
+#ghost-img-cont {
+  display: flex;
+  justify-items: center;
+  align-items: center;
+}
+
+#ghost-img-nav {
+  font-size: 0.8em !important;
+}
+
+.username {
   justify-self: start;
   margin: 0px 7px;
   cursor: pointer;
@@ -135,6 +198,7 @@ export default {
   background-color: #755139;
   border: solid 1px #f2edd7;
   color: #f2edd7;
+  outline: none;
 }
 
 #search-btn:hover {
@@ -145,6 +209,7 @@ export default {
 .search-input {
   width: 100%;
   border-radius: 5px;
+  color: #ccc39e;
 }
 
 #search-cont {
@@ -152,16 +217,17 @@ export default {
   grid-template-columns: 1fr 0.2fr;
 }
 
-#status-img-wrapper {
+.status-img-wrapper {
   position: relative;
   cursor: pointer;
 }
 
-#user-img {
+.user-img {
   display: grid;
   align-items: center;
   justify-items: end;
   grid-template-columns: 1fr 1fr;
+  position: relative;
 }
 
 #online-status {
@@ -174,7 +240,7 @@ export default {
   border-radius: 7px;
 }
 
-#user-profile-img {
+.user-profile-img {
   border: solid 2px #f2edd7;
   background-color: white;
   width: 48px;
@@ -284,7 +350,14 @@ a {
   color: #f2edd7;
 }
 
-/* Media Queries start */
+@keyframes fade-in {
+  0% {
+    opacity: 0;
+  }
+  100% {
+    opacity: 1;
+  }
+}
 
 @keyframes slide {
   from {
@@ -304,6 +377,7 @@ a {
   }
 }
 
+/* Media Queries start */
 @media screen and (min-width: 1444px) {
   .container,
   .containerv2 {
@@ -326,7 +400,7 @@ a {
   }
 
   #search-cont,
-  #user-img {
+  .user-img {
     display: none;
   }
 

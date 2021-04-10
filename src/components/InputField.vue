@@ -35,5 +35,6 @@ export default {
   width: 80%;
   height: stretch;
   outline: none;
+  color: #755139;
 }
 </style>
