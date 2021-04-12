@@ -153,6 +153,7 @@ export default {
   color: #755139;
 }  */
 #dropdown {
+  background-color: #f2edd7;
   position: absolute;
   border: solid 1px #f2edd7;
   width: 49%;

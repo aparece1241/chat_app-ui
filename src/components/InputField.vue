@@ -1,12 +1,19 @@
 <template>
   <div class="input-cont" v-bind:class="className">
-    <input 
+    <input v-if="type!='textarea'"
         v-bind:type="type" 
         v-bind:placeholder="placeholder" 
         v-bind:name="name" 
         v-bind:class="['inputs']"
         v-bind:style="inputClass"
         />
+
+      <textarea v-if="type=='textarea'"
+          v-bind:placeholder="placeholder" 
+          v-bind:name="name" 
+          v-bind:class="['inputs']"
+          v-bind:style="inputClass" autosize>
+      </textarea>
   </div>
 </template>
 

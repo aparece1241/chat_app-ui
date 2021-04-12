@@ -3,6 +3,9 @@
     <Header />
     <div id="sub-header">
       <div class="container" id="content-sub-header">
+        <span id="expand-bar"
+          ><i class="fa fa-indent" aria-hidden="true"></i
+        ></span>
         <span id="convo-title">Conversation Name</span>
       </div>
     </div>
@@ -11,12 +14,18 @@
       <div class="division">
         <div id="text-msg-cont">
           <InputField
+            type="textarea"
             name="text-message"
             placeholder="text message . . ."
             v-bind:className="['input-field-mod']"
             v-bind:inputClass="{
               'background-color': '#f5f4ef',
               'font-size': '1em',
+              'font-family': 'Avenir, Helvetica, Arial, sans-serif',
+              'max-height': '60%',
+              padding: '10px',
+              resize: 'none',
+              width: '100%',
             }"
           />
           <div class="icon-btn-cont">
@@ -32,6 +41,8 @@
         </div>
       </div>
     </div>
+
+    <div id="ghost-side-nav">test</div>
   </div>
 </template>
 
@@ -50,6 +61,24 @@ export default {
 </script>
 
 <style scoped>
+.button {
+  background-color: #f5f4ef;
+  border: none;
+  font-size: 1.4em;
+  color: #755139;
+  cursor: pointer;
+  outline: none;
+  width: 40px;
+  height: 40px;
+  transition: background-color 0.5s;
+}
+
+.button:hover {
+  background-color: #755139 !important;
+  color: #f5f4ef !important;
+  border-radius: 5px;
+}
+
 .home {
   display: grid;
   justify-items: center;
@@ -73,7 +102,7 @@ export default {
 
 #content {
   margin-top: 70px;
-  width: 98vw;
+  width: 100%;
   height: 100vh;
   grid-template-columns: 0.43fr 2fr;
 }
@@ -106,6 +135,7 @@ export default {
   align-items: center;
   border-radius: 10px;
   background-color: #f5f4ef;
+  margin-left: 5px;
 }
 
 .input-field-mod {
@@ -113,7 +143,26 @@ export default {
   width: 100%;
   height: 98%;
   display: flex;
-  justify-content: center;
+  justify-content: left;
+  align-items: center;
+}
+
+#expand-bar {
+  padding: 18px;
+  border-right: solid 1px rgb(187, 178, 178);
+  color: #755139;
+  cursor: pointer;
+}
+
+#ghost-side-nav {
+  position: fixed;
+  margin-top: 70.5px;
+  border-right: 1px solid rgb(187, 178, 178);
+  /* border: solid 1px blue; */
+  width: 14em;
+  z-index: 3;
+  height: 100%;
+  background-color: #f2edd7;
 }
 
 /* Media queries */
@@ -129,6 +178,20 @@ export default {
 
   #sub-header {
     width: 100%;
+  }
+}
+
+@media screen and (max-width: 900px) {
+  #content {
+    grid-template-columns: 1fr;
+  }
+
+  #side-nav {
+    display: none;
+  }
+
+  #text-msg-cont {
+    width: 98.8%;
   }
 }
 </style>
