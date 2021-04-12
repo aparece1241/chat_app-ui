@@ -42,7 +42,9 @@
       </div>
     </div>
 
-    <div id="ghost-side-nav">test</div>
+    <div id="ghost-side-nav">
+      <div id="convo-cont"></div>
+    </div>
   </div>
 </template>
 
@@ -163,6 +165,11 @@ export default {
   z-index: 3;
   height: 100%;
   background-color: #f2edd7;
+}
+
+#convo-cont {
+  border-bottom: solid 1px rgb(187, 178, 178);
+  height: 55px;
 }
 
 /* Media queries */
