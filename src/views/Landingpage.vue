@@ -8,7 +8,10 @@
           <p class="sub-head-line">Connecting People around the</p>
           <p class="sub-head-line">world through messages</p>
 
-          <button id="get-started-btn">Get Started</button>
+          <router-link to='/home'>
+            <button id="get-started-btn">Get Started</button>
+          </router-link>
+        
         </div>
       </div>
       <div class="division" id="division-2">
