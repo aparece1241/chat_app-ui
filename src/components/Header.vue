@@ -97,7 +97,7 @@
       <div id="ghost-navs" v-show="showNav">
         <p class="ghost-nav-item">Services</p>
         <p class="ghost-nav-item">About</p>
-        <router-link to="/sign-ip"
+        <router-link to="/sign-in"
           ><p class="ghost-nav-item">Sign in</p></router-link
         >
         <router-link to="/sign-up"
