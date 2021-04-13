@@ -1,12 +1,86 @@
 <template>
   <div id="header">
-    <div id="container">
+    <!-- If there is ang authenticated user -->
+    <div class="containerv2" v-if="user.username">
       <div id="logo">
-        <span id="logo-text">Let's Talk</span>
+        <span id="logo-text">mstalk</span>
+      </div>
+      <div id="search-cont">
+        <InputField
+          type="text"
+          placeholder="Search . . ."
+          name="search"
+          v-bind:className="['search-input']"
+        />
+        <button id="search-btn">
+          <span><i class="fa fa-search" aria-hidden="true"></i></span>
+        </button>
+      </div>
+      <div class="user-img" v-on:click="toggleCollapsible">
+        <div class="status-img-wrapper">
+          <img src="@/assets/img/default.png" alt="" class="user-profile-img" />
+          <div id="online-status"></div>
+        </div>
+        <span class="username">Hello {{ user.username }}</span>
+        <div id="dropdown" v-show="showCollapsible">
+          <p class="ghost-nav-item">My Profile</p>
+          <p class="ghost-nav-item">Sign out</p>
+        </div>
+      </div>
+      <div id="button-cont">
+        <span id="bar-btn" v-on:click="toogleNavs"
+          ><i
+            v-bind:class="[showNav ? 'fa fa-times' : 'fa fa-bars']"
+            aria-hidden="true"
+          ></i
+        ></span>
+      </div>
+
+      <div id="ghost-navs" v-show="showNav">
+        <div
+          class="ghost-nav-item"
+          id="ghost-img-cont"
+          v-on:click="toggleCollapsible"
+        >
+          <div class="status-img-wrapper">
+            <img
+              src="@/assets/img/default.png"
+              class="user-profile-img"
+              id="ghost-img"
+            />
+            <div id="online-status"></div>
+          </div>
+          <span class="username" id="ghost-img-nav"
+            >Hello {{ user.username }}</span
+          >
+        </div>
+        <div id="wrapper-sub-nav" v-show="showCollapsible">
+          <p class="ghost-nav-item">My Profile</p>
+          <p class="ghost-nav-item">Sign out</p>
+        </div>
+        <p class="ghost-nav-item">Services</p>
+        <p class="ghost-nav-item">About</p>
+        <router-link to="/sign-ip"
+          ><p class="ghost-nav-item">Sign in</p></router-link
+        >
+        <router-link to="/sign-up"
+          ><p class="ghost-nav-item">Sign up</p></router-link
+        >
+      </div>
+    </div>
+
+    <!-- If there is no authenticated user -->
+    <div class="container" v-if="!user.username">
+      <div id="logo">
+        <span id="logo-text">mstalk</span>
       </div>
       <div id="navs">
-        <router-link to="/sign-up"><span class="nav-item">Sign up</span></router-link>
-        <router-link to="/sign-in"><span class="nav-item">Sign in</span></router-link>
+        <router-link to="/sign-up"
+          ><span class="nav-item">Sign up</span></router-link
+        >
+        <router-link to="/sign-in"
+          ><span class="nav-item">Sign in</span></router-link
+        >
         <span class="nav-item">About</span>
         <span class="nav-item">Services</span>
       </div>
@@ -23,37 +97,162 @@
       <div id="ghost-navs" v-show="showNav">
         <p class="ghost-nav-item">Services</p>
         <p class="ghost-nav-item">About</p>
-        <p class="ghost-nav-item">Sign in</p>
-        <p class="ghost-nav-item">Sign up</p>
+        <router-link to="/sign-ip"
+          ><p class="ghost-nav-item">Sign in</p></router-link
+        >
+        <router-link to="/sign-up"
+          ><p class="ghost-nav-item">Sign up</p></router-link
+        >
       </div>
     </div>
   </div>
 </template>
 
 <script>
+import store from "../store/index";
+import InputField from "../components/InputField";
+
 export default {
   name: "Header",
-  components: {},
+  components: {
+    InputField,
+  },
   data() {
     return {
       showNav: false,
+      showCollapsible: false,
+      user: {},
     };
   },
   methods: {
     toogleNavs() {
       this.showNav = !this.showNav;
-    }
+    },
+    toggleCollapsible() {
+      this.showCollapsible = !this.showCollapsible;
+    },
   },
   computed: {},
-  created (){
-   
+  created() {
+    this.user = store.getters.getUserState;
   },
-  mounted () {
-  }
+  mounted() {},
 };
 </script>
 
 <style scoped>
+/* If there is a user authenticated start*/
+/* .fa-sort-down:before,
+.fa-sort-desc:before {
+  margin: 0px 5px;
+  font-size: 21px;
+}
+
+.fa-sort-desc:before:hover {
+  background-color: #f2edd7;
+  color: #755139;
+}  */
+#dropdown {
+  background-color: #f2edd7;
+  position: absolute;
+  border: solid 1px #f2edd7;
+  width: 49%;
+  top: 63px;
+  right: 13%;
+  box-shadow: 1px 0px 5px grey;
+  border-radius: 5px;
+  animation: fade-in 1s 1;
+}
+
+#wrapper-sub-nav {
+  animation: fade-in 1s 1;
+  font-weight: 300;
+}
+
+#ghost-img {
+  width: 30px !important;
+  height: 30px !important;
+}
+
+#ghost-img-cont {
+  display: flex;
+  justify-items: center;
+  align-items: center;
+}
+
+#ghost-img-nav {
+  font-size: 0.8em !important;
+}
+
+.username {
+  justify-self: start;
+  margin: 0px 7px;
+  cursor: pointer;
+}
+
+#search-btn {
+  border: none;
+  margin: 0px 2px;
+  border-radius: 5px;
+  width: 43px;
+  cursor: pointer;
+  background-color: #755139;
+  border: solid 1px #f2edd7;
+  color: #f2edd7;
+  outline: none;
+}
+
+#search-btn:hover {
+  color: #755139;
+  background-color: #f2edd7;
+}
+
+.search-input {
+  width: 100%;
+  border-radius: 5px;
+  color: #ccc39e;
+}
+
+#search-cont {
+  display: grid;
+  grid-template-columns: 1fr 0.2fr;
+}
+
+.status-img-wrapper {
+  position: relative;
+  cursor: pointer;
+}
+
+.user-img {
+  display: grid;
+  align-items: center;
+  justify-items: end;
+  grid-template-columns: 1fr 1fr;
+  position: relative;
+}
+
+#online-status {
+  position: absolute;
+  width: 12px;
+  height: 12px;
+  background-color: rgb(58, 207, 58);
+  bottom: 4px;
+  right: 2px;
+  border-radius: 7px;
+}
+
+.user-profile-img {
+  border: solid 2px #f2edd7;
+  background-color: white;
+  width: 48px;
+  height: 48px;
+  border-radius: 30px;
+}
+
+a {
+  text-decoration: none;
+}
+
 #header {
   position: fixed;
   width: 100%;
@@ -73,7 +272,14 @@ export default {
   top: 0;
 }
 
-#container {
+.containerv2 {
+  display: grid;
+  grid-template-columns: 0.3fr 1fr 0.5fr;
+  align-items: center;
+}
+/* If there is a user aouthenticated end */
+
+.container {
   display: grid;
   grid-template-columns: 1fr 1fr;
   align-items: center;
@@ -105,7 +311,7 @@ export default {
   float: right;
   cursor: pointer;
   padding: 24px 25px;
-   color: #f2edd7;
+  color: #f2edd7;
 }
 
 .nav-item:hover {
@@ -131,18 +337,27 @@ export default {
 
 .ghost-nav-item {
   cursor: pointer;
-  border: solid 1px #755139;
-  width: 100%;
+  border: none;
+  width: 87%;
   text-align: center;
-  margin-bottom: 0px;
+  margin: 2px 0px;
   padding: 10px;
-  margin-right: 20px;
+  color: #755139;
+  text-decoration: none;
 }
 
 .ghost-nav-item:hover {
   background-color: #755139;
   color: #f2edd7;
-  border: solid 1px #f2edd7;
+}
+
+@keyframes fade-in {
+  0% {
+    opacity: 0;
+  }
+  100% {
+    opacity: 1;
+  }
 }
 
 @keyframes slide {
@@ -163,8 +378,10 @@ export default {
   }
 }
 
+/* Media Queries start */
 @media screen and (min-width: 1444px) {
-  #container {
+  .container,
+  .containerv2 {
     justify-self: center;
     width: 1444px;
   }
@@ -175,7 +392,16 @@ export default {
 }
 
 @media screen and (max-width: 900px) {
+  .containerv2 {
+    grid-template-columns: 1fr 1fr;
+  }
+
   #navs {
+    display: none;
+  }
+
+  #search-cont,
+  .user-img {
     display: none;
   }
 
@@ -187,4 +413,5 @@ export default {
     display: block;
   }
 }
+/* Media Queries end */
 </style>
