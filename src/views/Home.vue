@@ -4,7 +4,7 @@
     <div id="sub-header">
       <div class="container" id="content-sub-header">
         <span id="expand-bar"
-          ><i class="fa fa-indent" aria-hidden="true"></i
+          v-on:click="toogleSideNav"><i class="fa fa-indent" aria-hidden="true"></i
         ></span>
         <span id="convo-title">Conversation Name</span>
       </div>
@@ -42,8 +42,12 @@
       </div>
     </div>
 
-    <div id="ghost-side-nav">
-      <div id="convo-cont"></div>
+    <div id="ghost-side-nav" v-show="showSideBar">
+      <div id="convo-cont">
+        <span id="return-arrow" v-on:click="toogleSideNav"
+          ><i class="fa fa-arrow-left" aria-hidden="true"></i
+        ></span>
+      </div>
     </div>
   </div>
 </template>
@@ -59,6 +63,16 @@ export default {
     Header,
     InputField,
   },
+  data() {
+    return {
+      showSideBar: false
+    }
+  },
+  methods: {
+    toogleSideNav () {
+      this.showSideBar = !this.showSideBar;
+    }
+  }
 };
 </script>
 
@@ -130,7 +144,7 @@ export default {
   position: fixed;
   bottom: 0em;
   height: 95px;
-  width: 82%;
+  width: 81.4%;
   display: grid;
   grid-template-columns: 2fr 0.5fr;
   justify-items: center;
@@ -154,6 +168,12 @@ export default {
   border-right: solid 1px rgb(187, 178, 178);
   color: #755139;
   cursor: pointer;
+  display: none;
+}
+
+#expand-bar:hover {
+  color: #f5f4ef;
+  background-color: #755139;
 }
 
 #ghost-side-nav {
@@ -161,15 +181,39 @@ export default {
   margin-top: 70.5px;
   border-right: 1px solid rgb(187, 178, 178);
   /* border: solid 1px blue; */
-  width: 14em;
-  z-index: 3;
+  width: 15em;
+  z-index: 1;
   height: 100%;
   background-color: #f2edd7;
+  animation: slide 0.5s 1;
 }
 
 #convo-cont {
   border-bottom: solid 1px rgb(187, 178, 178);
   height: 55px;
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  margin-right: 10px;
+  width: 100%;
+}
+
+#return-arrow {
+  padding: 18px 19px;
+  border-left: solid 1px rgb(187, 178, 178);
+  color: #755139;
+  cursor: pointer;
+}
+
+#return-arrow:hover {
+  color: #f2edd7;
+  background-color: #755139;
+}
+
+/* Keyframes */
+@keyframes slide {
+  from {left:-123px}
+  to{left: 0px}
 }
 
 /* Media queries */
@@ -186,10 +230,22 @@ export default {
   #sub-header {
     width: 100%;
   }
+
+  #text-msg-cont {
+    width: 1173px;
+  }
+
+}
+
+@media screen and (min-width: 900px) {
+  #ghost-side-nav {
+    display: none;
+  }
 }
 
 @media screen and (max-width: 900px) {
   #content {
+    display: grid;
     grid-template-columns: 1fr;
   }
 
@@ -197,8 +253,22 @@ export default {
     display: none;
   }
 
+  #expand-bar {
+    display: block;
+  }
+
   #text-msg-cont {
     width: 98.8%;
+  }
+}
+
+@media screen and (max-width: 410px) {
+  .icon-btn-cont {
+    width: 88px;
+  }
+
+  #text-msg-cont {
+    width: 97.8%;
   }
 }
 </style>

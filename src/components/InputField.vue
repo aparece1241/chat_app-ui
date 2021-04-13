@@ -11,7 +11,7 @@
       <textarea v-if="type=='textarea'"
           v-bind:placeholder="placeholder" 
           v-bind:name="name" 
-          v-bind:class="['inputs']"
+          v-bind:class="['inputs', 'rid-scroll']"
           v-bind:style="inputClass" autosize>
       </textarea>
   </div>
@@ -45,5 +45,24 @@ export default {
   height: stretch;
   outline: none;
   color: #755139;
+}
+
+.rid-scroll::-webkit-scrollbar {
+    width: 5px;
+}
+ 
+/* Track */
+.rid-scroll::-webkit-scrollbar-track {
+    -webkit-border-radius: 10px;
+    border-radius: 10px;
+}
+ 
+/* Handle */
+.rid-scroll::-webkit-scrollbar-thumb {
+    opacity:0.1;
+    -webkit-border-radius: 10px;
+    border-radius: 10px;
+    background: rgba(0,0,0,0.3); 
+    -webkit-box-shadow: inset 0 0 6px rgba(0,0,0,0.5); 
 }
 </style>
