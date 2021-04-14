@@ -20,6 +20,8 @@
             v-bind:className="['input-field']"
             ref="first_name"
             v-on:input="checkInput"
+            v-bind:errorMsg="fieldValidation.first_name.message"
+            v-bind:containError="fieldValidation.first_name.valid"
           />
           <InputField
             name="last_name"
@@ -27,6 +29,8 @@
             v-bind:className="['input-field']"
             ref="last_name"
             v-on:input="checkInput"
+            v-bind:errorMsg="fieldValidation.last_name.message"
+            v-bind:containError="fieldValidation.last_name.valid"
           />
           <InputField
             name="username"
@@ -34,6 +38,8 @@
             v-bind:className="['input-field']"
             ref="username"
             v-on:input="checkInput"
+            v-bind:errorMsg="fieldValidation.username.message"
+            v-bind:containError="fieldValidation.username.valid"
           />
           <InputField
             name="password"
@@ -42,6 +48,8 @@
             v-bind:className="['input-field']"
             ref="password"
             v-on:input="checkInput"
+            v-bind:errorMsg="fieldValidation.password.message"
+            v-bind:containError="fieldValidation.password.valid"
           />
           <button class="button" id="sign-up-btn">Sign up</button>
         </form>
@@ -52,6 +60,8 @@
 
 <script>
 import InputField from "../components/InputField";
+import apiHelper from "../helper/apiHelper";
+import valHelpers from '../helper/formValHelper';
 
 export default {
   name: "Sign-up",
@@ -64,16 +74,66 @@ export default {
       last_name: "",
       username: "",
       password: "",
+      isValidForm: false,
+      fieldValidation: {
+        first_name: {
+          valid: false,
+          message: ''
+        },
+        last_name: {
+          valid: false,
+          message: ''
+        },
+        username: {
+          valid: false,
+          message: ''
+        },
+        password: {
+          valid: false,
+          message: ''
+        }
+      }
     };
   },
   methods: {
     checkInput(data) {
+      let validationRules = {
+        first_name: {length: 5},
+        last_name: {length: 5},
+        username: {length: 5},
+        password: {length: 8},
+      }
       let fieldName = data["eventName"];
       this[fieldName] = data["data"];
+      this.fieldValidation[fieldName] = valHelpers.checkLength(validationRules[fieldName].length, this[fieldName]);
+      this.isValidForm = this.fieldValidation.first_name.valid &&
+                         this.fieldValidation.last_name.valid &&
+                         this.fieldValidation.username.valid &&
+                         this.fieldValidation.password.valid;
+      console.log(this.isValidForm);
     },
 
-    submitData() {
-      console.log({first_name: this.first_name,last_name: this.last_name,username: this.username, password: this.password});
+    async submitData() {
+      let data = {
+        first_name: this.first_name,
+        last_name: this.last_name,
+        username: this.username,
+        password: this.password
+      };
+      if(!this.isValidForm) {
+        for(let field of Object.values(this.fieldValidation)){
+          field.message = field.valid ? '': field.message ? field.message : ' should not be empty!';
+        }
+        return;
+      }
+
+      let response = await apiHelper('/user','POST', data);
+      if(!response.error) {
+        this.$router.push({name: 'Sign-in'});
+      }else {
+        console.log(response);
+      }
+      
     }
   },
 };

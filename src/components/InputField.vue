@@ -24,6 +24,9 @@
       autosize
     >
     </textarea>
+    <div class="error-cont" v-show="!containError && errorMsg">
+      <small id="error-msg">{{errorMsg}}</small>
+    </div>
   </div>
 </template>
 
@@ -36,22 +39,29 @@ export default {
     placeholder: { type: String, default: "Input field" },
     name: { type: String, required: true },
     className: { type: Array },
+    errorMsg: {type: String, default: null},
+    containError: {type: Boolean, default: true}
   },
   data() {
     return {
-      data: ""
-    }
+      data: "",
+    };
   },
   methods: {
     passData() {
       let eventName = this.$vnode.data.ref;
-      this.$emit('input', {eventName: eventName, data:this.data});
-    }
-  }
+      this.$emit("input", { eventName: eventName, data: this.data });
+    },
+  },
 };
 </script>
 
 <style scoped>
+#error-msg {
+  color: rgb(265,100,31);
+  font-style: italic;
+}
+
 .input-cont {
   width: 15em;
   height: 40px;
