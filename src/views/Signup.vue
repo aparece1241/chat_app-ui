@@ -6,16 +6,43 @@
           <img src="@/assets/img/message-signup.png" id="img-sign-up" alt="" />
           <p id="text-saying">Comunication is what makes a team strong</p>
           <p id="sub-head">Already had an account?, Click sign in</p>
-          <router-link to="/sign-in"><button id="sign-in" class="button">Sign in</button></router-link>
+          <router-link to="/sign-in"
+            ><button id="sign-in" class="button">Sign in</button></router-link
+          >
         </div>
       </div>
       <div id="division-2" class="division">
-        <form action="">
+        <form action="post" v-on:submit.prevent="submitData">
           <p id="text-sign-up">Sign up</p>
-          <InputField name="first_name" placeholder="First Name" v-bind:className="['input-field']"/>
-          <InputField name="last_name" placeholder="Last Name" v-bind:className="['input-field']"/>
-          <InputField name="username" placeholder="Username" v-bind:className="['input-field']"/>
-          <InputField name="password" type="password" placeholder="Password" v-bind:className="['input-field']"/>
+          <InputField
+            name="first_name"
+            placeholder="First Name"
+            v-bind:className="['input-field']"
+            ref="first_name"
+            v-on:input="checkInput"
+          />
+          <InputField
+            name="last_name"
+            placeholder="Last Name"
+            v-bind:className="['input-field']"
+            ref="last_name"
+            v-on:input="checkInput"
+          />
+          <InputField
+            name="username"
+            placeholder="Username"
+            v-bind:className="['input-field']"
+            ref="username"
+            v-on:input="checkInput"
+          />
+          <InputField
+            name="password"
+            type="password"
+            placeholder="Password"
+            v-bind:className="['input-field']"
+            ref="password"
+            v-on:input="checkInput"
+          />
           <button class="button" id="sign-up-btn">Sign up</button>
         </form>
       </div>
@@ -24,13 +51,31 @@
 </template>
 
 <script>
-import InputField from '../components/InputField';
+import InputField from "../components/InputField";
 
 export default {
   name: "Sign-up",
   components: {
-    InputField
-  }
+    InputField,
+  },
+  data() {
+    return {
+      first_name: "",
+      last_name: "",
+      username: "",
+      password: "",
+    };
+  },
+  methods: {
+    checkInput(data) {
+      let fieldName = data["eventName"];
+      this[fieldName] = data["data"];
+    },
+
+    submitData() {
+      console.log({first_name: this.first_name,last_name: this.last_name,username: this.username, password: this.password});
+    }
+  },
 };
 </script>
 
