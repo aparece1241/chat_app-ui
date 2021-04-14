@@ -16,10 +16,10 @@
         </div>
       </div>
       <div id="division-2" class="division">
-        <form>
+        <form method="post" v-on:submit.prevent="submitData"> 
           <p id="sign-in-text">Sign in</p>
-          <InputField name="username" placeholder="Username" v-bind:className="['input-field']"/>
-          <InputField name="password" type="password" placeholder="Password" v-bind:className="['input-field']"/>
+          <InputField name="username" placeholder="Username" v-bind:className="['input-field']" ref="username" v-on:input="checkInput"/>
+          <InputField name="password" type="password" placeholder="Password" v-bind:className="['input-field']" ref="password" v-on:input="checkInput"/>
           <button class="button" id="sign-in">Sign in</button>
         </form>
       </div>
@@ -35,6 +35,26 @@ export default {
   components: {
     InputField,
   },
+  data() {
+    return {
+      username: "",
+      password: "",
+    }
+  },
+  methods: {
+    // Validation method
+    checkInput(data) {
+      let fieldName = data['eventName'];
+      this[fieldName] = data['data'];
+    },
+
+    submitData() {
+      
+    }
+  },
+  mounted() {
+    
+  }
 };
 </script>
 
