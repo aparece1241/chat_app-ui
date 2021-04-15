@@ -6,16 +6,51 @@
           <img src="@/assets/img/message-signup.png" id="img-sign-up" alt="" />
           <p id="text-saying">Comunication is what makes a team strong</p>
           <p id="sub-head">Already had an account?, Click sign in</p>
-          <router-link to="/sign-in"><button id="sign-in" class="button">Sign in</button></router-link>
+          <router-link to="/sign-in"
+            ><button id="sign-in" class="button">Sign in</button></router-link
+          >
         </div>
       </div>
       <div id="division-2" class="division">
-        <form action="">
+        <form action="post" v-on:submit.prevent="submitData">
           <p id="text-sign-up">Sign up</p>
-          <InputField name="first_name" placeholder="First Name" v-bind:className="['input-field']"/>
-          <InputField name="last_name" placeholder="Last Name" v-bind:className="['input-field']"/>
-          <InputField name="username" placeholder="Username" v-bind:className="['input-field']"/>
-          <InputField name="password" type="password" placeholder="Password" v-bind:className="['input-field']"/>
+          <InputField
+            name="first_name"
+            placeholder="First Name"
+            v-bind:className="['input-field']"
+            ref="first_name"
+            v-on:input="checkInput"
+            v-bind:errorMsg="fieldValidation.first_name.message"
+            v-bind:containError="fieldValidation.first_name.valid"
+          />
+          <InputField
+            name="last_name"
+            placeholder="Last Name"
+            v-bind:className="['input-field']"
+            ref="last_name"
+            v-on:input="checkInput"
+            v-bind:errorMsg="fieldValidation.last_name.message"
+            v-bind:containError="fieldValidation.last_name.valid"
+          />
+          <InputField
+            name="username"
+            placeholder="Username"
+            v-bind:className="['input-field']"
+            ref="username"
+            v-on:input="checkInput"
+            v-bind:errorMsg="fieldValidation.username.message"
+            v-bind:containError="fieldValidation.username.valid"
+          />
+          <InputField
+            name="password"
+            type="password"
+            placeholder="Password"
+            v-bind:className="['input-field']"
+            ref="password"
+            v-on:input="checkInput"
+            v-bind:errorMsg="fieldValidation.password.message"
+            v-bind:containError="fieldValidation.password.valid"
+          />
           <button class="button" id="sign-up-btn">Sign up</button>
         </form>
       </div>
@@ -24,13 +59,83 @@
 </template>
 
 <script>
-import InputField from '../components/InputField';
+import InputField from "../components/InputField";
+import apiHelper from "../helper/apiHelper";
+import valHelpers from '../helper/formValHelper';
 
 export default {
   name: "Sign-up",
   components: {
-    InputField
-  }
+    InputField,
+  },
+  data() {
+    return {
+      first_name: "",
+      last_name: "",
+      username: "",
+      password: "",
+      isValidForm: false,
+      fieldValidation: {
+        first_name: {
+          valid: false,
+          message: ''
+        },
+        last_name: {
+          valid: false,
+          message: ''
+        },
+        username: {
+          valid: false,
+          message: ''
+        },
+        password: {
+          valid: false,
+          message: ''
+        }
+      }
+    };
+  },
+  methods: {
+    checkInput(data) {
+      let validationRules = {
+        first_name: {length: 5},
+        last_name: {length: 5},
+        username: {length: 5},
+        password: {length: 8},
+      }
+      let fieldName = data["eventName"];
+      this[fieldName] = data["data"];
+      this.fieldValidation[fieldName] = valHelpers.checkLength(validationRules[fieldName].length, this[fieldName]);
+      this.isValidForm = this.fieldValidation.first_name.valid &&
+                         this.fieldValidation.last_name.valid &&
+                         this.fieldValidation.username.valid &&
+                         this.fieldValidation.password.valid;
+      console.log(this.isValidForm);
+    },
+
+    async submitData() {
+      let data = {
+        first_name: this.first_name,
+        last_name: this.last_name,
+        username: this.username,
+        password: this.password
+      };
+      if(!this.isValidForm) {
+        for(let field of Object.values(this.fieldValidation)){
+          field.message = field.valid ? '': field.message ? field.message : ' should not be empty!';
+        }
+        return;
+      }
+
+      let response = await apiHelper('/user','POST', data);
+      if(!response.error) {
+        this.$router.push({name: 'Sign-in'});
+      }else {
+        console.log(response);
+      }
+      
+    }
+  },
 };
 </script>
 
