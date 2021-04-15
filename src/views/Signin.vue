@@ -18,8 +18,23 @@
       <div id="division-2" class="division">
         <form method="post" v-on:submit.prevent="submitData"> 
           <p id="sign-in-text">Sign in</p>
-          <InputField name="username" placeholder="Username" v-bind:className="['input-field']" ref="username" v-on:input="checkInput"/>
-          <InputField name="password" type="password" placeholder="Password" v-bind:className="['input-field']" ref="password" v-on:input="checkInput"/>
+          <InputField 
+            name="username" 
+            placeholder="Username" 
+            v-bind:className="['input-field']" 
+            ref="username" 
+            v-on:input="checkInput"
+            v-bind:errorMsg="fieldValidation.username.message"
+            v-bind:containError="fieldValidation.username.valid"/>
+          <InputField 
+            name="password" 
+            type="password" 
+            placeholder="Password" 
+            v-bind:className="['input-field']" 
+            ref="password" 
+            v-on:input="checkInput"
+            v-bind:errorMsg="fieldValidation.password.message"
+            v-bind:containError="fieldValidation.password.valid"/>
           <button class="button" id="sign-in">Sign in</button>
         </form>
       </div>
@@ -29,6 +44,8 @@
 
 <script>
 import InputField from "../components/InputField";
+import FormValHelper from "../helper/formValHelper";
+import ApiHelper from "../helper/apiHelper";
 
 export default {
   name: "Signin",
@@ -39,17 +56,55 @@ export default {
     return {
       username: "",
       password: "",
+      fieldValidation: {
+        username: {
+          valid: false,
+          message: ''
+        },
+        password: {
+          valid: false,
+          message: ''
+        }
+      },
+      isValidForm: false
     }
   },
   methods: {
     // Validation method
     checkInput(data) {
+      let validationRules = {
+        username: {length: 5},
+        password: {length: 8}
+      };
+
       let fieldName = data['eventName'];
       this[fieldName] = data['data'];
+      this.fieldValidation[fieldName] = FormValHelper.checkLength(validationRules[fieldName].length, this[fieldName]);
+      this.isValidForm = this.fieldValidation.username.valid && this.fieldValidation.password.valid;
+
     },
 
-    submitData() {
-      
+    async submitData() {
+      let data = {
+        username: this.username,
+        password: this.password
+      }
+
+      if(!this.isValidForm) {
+        for(let field of Object.values(this.fieldValidation)){
+          field.message = field.valid ? '': field.message ? field.message : ' should not be empty!';
+        }
+        return;
+      }
+
+      let response = await ApiHelper('/user/login', 'POST', data);
+      if(!response.error) {
+        console.log('successfully login');
+        console.log(response);
+      }else {
+        console.log(response);
+      }
+
     }
   },
   mounted() {
