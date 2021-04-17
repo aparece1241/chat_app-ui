@@ -1,5 +1,6 @@
 <template>
   <div id="wrapper">
+    <AlertMsg />
     <div id="container">
       <div id="division-1" class="division">
         <div id="line-text">
@@ -46,11 +47,13 @@
 import InputField from "../components/InputField";
 import FormValHelper from "../helper/formValHelper";
 import ApiHelper from "../helper/apiHelper";
+import AlertMsg from "../components/AlertMsg";
 
 export default {
   name: "Signin",
   components: {
     InputField,
+    AlertMsg
   },
   data() {
     return {
