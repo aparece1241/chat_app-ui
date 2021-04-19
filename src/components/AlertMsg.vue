@@ -1,10 +1,13 @@
 <template>
   <div id="alert-cont">
-    <div id="alert-msg-cont">
-      <span id="alert-icon-cont"
-        ><i class="fa fa-exclamation-circle" aria-hidden="true"></i
-      ></span>
-      <span>This is alert</span>
+    <div class="alert-msg-cont" id="cont-wrapper">
+      <div class="alert-icon-cont" id="back-border"></div>
+      <div class="alert-msg-cont">
+        <div class="alert-icon-cont">
+          <img class="alert" src="@/assets/icons/exclamation.png" />
+        </div>
+        <div>This is alert</div>
+      </div>
     </div>
   </div>
 </template>
@@ -16,6 +19,18 @@ export default {
 </script>
 
 <style scoped>
+#cont-wrapper {
+  padding: 0px;
+  width: 328px;
+  height: 328px;
+  border: solid green 4px;
+}
+
+.alert {
+  width: 75px;
+  height: 75px;
+}
+
 #alert-cont {
   position: fixed;
   z-index: 5;
@@ -23,16 +38,12 @@ export default {
   width: 100vw;
   height: 100vh;
   background-color: rgba(242, 237, 215, 0.7);
-  /* opacity: 0.5; */
-  /* filter: blur(8px);
-  -webkit-filter: blur(8px); */
   display: grid;
   justify-items: center;
   align-items: center;
 }
 
-#alert-msg-cont {
-  border: solid green 1px;
+.alert-msg-cont {
   padding: 20px;
   width: 18em;
   height: 18em;
@@ -40,15 +51,24 @@ export default {
   position: relative;
 }
 
-#alert-icon-cont {
-  border: solid 1px saddlebrown;
-  height: auto;
-  padding: 0px 0.121em;
-  font-size: 5.5em;
-  border-radius: 51px;
-  color: saddlebrown;
+.alert-icon-cont {
+  border: transparent;
   position: absolute;
-  top: -51px;
-  left: 35%;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -271%);
+  width: 75px;
+  height: 75px;
+  border-radius: 100%;
+  background: #fff;
+}
+
+#back-border {
+  background-color: rgb(242, 237, 215);
+  border: solid 4px green;
+  transform: translate(-50%, -249%);
+  /* padding: 0px; */
+  width: 80px;
+  height: 76.5px;
 }
 </style>
