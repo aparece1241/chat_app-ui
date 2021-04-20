@@ -20,7 +20,8 @@ export default {
     title: {type: String, default: ""},
     iconName: {type: String, default: ""},
     customStyle: {type: Object, default: null},
-    customClass: {type: Object, default: null}
+    customClass: {type: Object, default: null},
+    buttons: {type: Object, default(){ return{showAll: false, ok: true, cancel: false}}}
   },
   data() {
     return {};
