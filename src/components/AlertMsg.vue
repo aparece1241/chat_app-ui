@@ -4,7 +4,7 @@
       <div class="alert-icon-cont" id="back-border"></div>
       <div class="alert-msg-cont">
         <div class="alert-icon-cont">
-          <img id="alert" src="@/assets/icons/danger.png" />
+          <img id="alert" src="@/assets/icons/success.png" />
         </div>
         <div>This is alert</div>
       </div>
@@ -15,6 +15,13 @@
 <script>
 export default {
   name: "Alert",
+  props: {
+    message: {type: String, default: ""},
+    title: {type: String, default: ""},
+    iconName: {type: String, default: ""},
+    customStyle: {type: Object, default: null},
+    customClass: {type: Object, default: null}
+  },
   data() {
     return {};
   },
@@ -43,7 +50,7 @@ export default {
   padding: 0px;
   width: 328px;
   height: 328px;
-  border: solid green 4px;
+  border: solid #2d922d 4px;
 }
 
 #alert {
@@ -54,7 +61,7 @@ export default {
 #alert-cont {
   position: fixed;
   z-index: 5;
-  border: solid green 0px;
+  border: solid #2d922d 0px;
   width: 100vw;
   height: 100vh;
   background-color: rgba(242, 237, 215, 0.7);
@@ -86,7 +93,7 @@ export default {
 
 #back-border {
   background-color: rgb(242, 237, 215);
-  border: solid 4px green;
+  border: solid 4px #2d922d;
   transform: translate(-50%, -249%);
   /* padding: 0px; */
   width: 80px;
