@@ -1,10 +1,10 @@
 <template>
-  <div id="alert-cont">
-    <div class="alert-msg-cont" id="cont-wrapper">
-      <div class="alert-icon-cont" id="back-border"></div>
-      <div class="alert-msg-cont">
-        <div class="alert-icon-cont">
-          <img class="alert" src="@/assets/icons/exclamation.png" />
+  <div id="alert alert-cont">
+    <div class="alert alert-msg-cont" id="cont-wrapper">
+      <div class="alert alert-icon-cont" id="back-border"></div>
+      <div class="alert alert-msg-cont">
+        <div class="alert alert-icon-cont">
+          <img id="alert" src="@/assets/icons/warning.png" />
         </div>
         <div>This is alert</div>
       </div>
@@ -15,10 +15,20 @@
 <script>
 export default {
   name: "Alert",
+  data() {
+    return {}
+  },
+  methods: {
+    
+  }
 };
 </script>
 
 <style scoped>
+.alert {
+  /* display: none; */
+}
+
 #cont-wrapper {
   padding: 0px;
   width: 328px;
@@ -26,7 +36,7 @@ export default {
   border: solid green 4px;
 }
 
-.alert {
+#alert {
   width: 75px;
   height: 75px;
 }
