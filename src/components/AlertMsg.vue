@@ -4,7 +4,7 @@
       <div class="alert-icon-cont" id="back-border"></div>
       <div class="alert-msg-cont">
         <div class="alert-icon-cont">
-          <img id="alert" src="@/assets/icons/warning.png" />
+          <img id="alert" src="@/assets/icons/danger.png" />
         </div>
         <div>This is alert</div>
       </div>
