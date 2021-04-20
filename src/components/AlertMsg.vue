@@ -1,9 +1,9 @@
 <template>
-  <div id="alert alert-cont">
-    <div class="alert alert-msg-cont" id="cont-wrapper">
-      <div class="alert alert-icon-cont" id="back-border"></div>
-      <div class="alert alert-msg-cont">
-        <div class="alert alert-icon-cont">
+  <div id="alert-cont">
+    <div class="alert-msg-cont" id="cont-wrapper">
+      <div class="alert-icon-cont" id="back-border"></div>
+      <div class="alert-msg-cont">
+        <div class="alert-icon-cont">
           <img id="alert" src="@/assets/icons/warning.png" />
         </div>
         <div>This is alert</div>
@@ -16,17 +16,27 @@
 export default {
   name: "Alert",
   data() {
-    return {}
+    return {};
   },
-  methods: {
-    
-  }
+  methods: {},
 };
 </script>
 
 <style scoped>
-.alert {
-  /* display: none; */
+.info {
+  border: solid 4px #51b1de;
+}
+
+.danger {
+  border: solid #ff0e0e 4px;
+}
+
+.warning {
+  border: solid 4px orange;
+}
+
+.success {
+  border: solid #2d922d 4px;
 }
 
 #cont-wrapper {
@@ -51,6 +61,7 @@ export default {
   display: grid;
   justify-items: center;
   align-items: center;
+  animation: fadeIn 0.5s 1;
 }
 
 .alert-msg-cont {
@@ -80,5 +91,14 @@ export default {
   /* padding: 0px; */
   width: 80px;
   height: 76.5px;
+}
+
+@keyframes fadeIn {
+  0% {
+    opacity: 0;
+  }
+  100% {
+    opacity: 1;
+  }
 }
 </style>
