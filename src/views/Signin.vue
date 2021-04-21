@@ -1,5 +1,14 @@
 <template>
   <div id="wrapper">
+    <AlertMsg
+      v-bind:title="title"
+      v-bind:message="alertMessage"
+      v-bind:iconName="iconName"
+      v-bind:customStyle="alertCustomStyle"
+      v-bind:ok="buttons.ok"
+      v-bind:cancel="buttons.cancel"
+      v-on:buttonClick="alertBtnClicked"
+    />
     <div id="container">
       <div id="division-1" class="division">
         <div id="line-text">
@@ -16,25 +25,27 @@
         </div>
       </div>
       <div id="division-2" class="division">
-        <form method="post" v-on:submit.prevent="submitData"> 
+        <form method="post" v-on:submit.prevent="submitData">
           <p id="sign-in-text">Sign in</p>
-          <InputField 
-            name="username" 
-            placeholder="Username" 
-            v-bind:className="['input-field']" 
-            ref="username" 
+          <InputField
+            name="username"
+            placeholder="Username"
+            v-bind:className="['input-field']"
+            ref="username"
             v-on:input="checkInput"
             v-bind:errorMsg="fieldValidation.username.message"
-            v-bind:containError="fieldValidation.username.valid"/>
-          <InputField 
-            name="password" 
-            type="password" 
-            placeholder="Password" 
-            v-bind:className="['input-field']" 
-            ref="password" 
+            v-bind:containError="fieldValidation.username.valid"
+          />
+          <InputField
+            name="password"
+            type="password"
+            placeholder="Password"
+            v-bind:className="['input-field']"
+            ref="password"
             v-on:input="checkInput"
             v-bind:errorMsg="fieldValidation.password.message"
-            v-bind:containError="fieldValidation.password.valid"/>
+            v-bind:containError="fieldValidation.password.valid"
+          />
           <button class="button" id="sign-in">Sign in</button>
         </form>
       </div>
@@ -46,11 +57,13 @@
 import InputField from "../components/InputField";
 import FormValHelper from "../helper/formValHelper";
 import ApiHelper from "../helper/apiHelper";
+import AlertMsg from "../components/AlertMsg";
 
 export default {
   name: "Signin",
   components: {
     InputField,
+    AlertMsg,
   },
   data() {
     return {
@@ -59,57 +72,79 @@ export default {
       fieldValidation: {
         username: {
           valid: false,
-          message: ''
+          message: "",
         },
         password: {
           valid: false,
-          message: ''
-        }
+          message: "",
+        },
       },
-      isValidForm: false
-    }
+      isValidForm: false,
+      alertCustomStyle: {},
+      alertMessage: "",
+      iconName: "success",
+      title: "",
+      buttons: { ok: true, cancel: false },
+    };
   },
   methods: {
+    alertBtnClicked(data) {
+      if(data.name == 'ok') {
+        this.alertCustomStyle = {"display": "none"};
+        this.$router.push({name: 'Home'});
+        // Redirect to Home
+      }
+    },
+
     // Validation method
     checkInput(data) {
       let validationRules = {
-        username: {length: 5},
-        password: {length: 8}
+        username: { length: 5 },
+        password: { length: 8 },
       };
 
-      let fieldName = data['eventName'];
-      this[fieldName] = data['data'];
-      this.fieldValidation[fieldName] = FormValHelper.checkLength(validationRules[fieldName].length, this[fieldName]);
-      this.isValidForm = this.fieldValidation.username.valid && this.fieldValidation.password.valid;
-
+      let fieldName = data["eventName"];
+      this[fieldName] = data["data"];
+      this.fieldValidation[fieldName] = FormValHelper.checkLength(
+        validationRules[fieldName].length,
+        this[fieldName]
+      );
+      this.isValidForm =
+        this.fieldValidation.username.valid &&
+        this.fieldValidation.password.valid;
     },
 
     async submitData() {
       let data = {
         username: this.username,
-        password: this.password
-      }
+        password: this.password,
+      };
 
-      if(!this.isValidForm) {
-        for(let field of Object.values(this.fieldValidation)){
-          field.message = field.valid ? '': field.message ? field.message : ' should not be empty!';
+      if (!this.isValidForm) {
+        for (let field of Object.values(this.fieldValidation)) {
+          field.message = field.valid
+            ? ""
+            : field.message
+            ? field.message
+            : " should not be empty!";
         }
         return;
       }
 
-      let response = await ApiHelper('/user/login', 'POST', data);
-      if(!response.error) {
-        console.log('successfully login');
-        console.log(response);
-      }else {
-        console.log(response);
+      let response = await ApiHelper("/user/login", "POST", data);
+      if (!response.error) {
+        this.iconName = "success";
+        this.title = "Login Successfully";
+        this.alertMessage = "";
+      } else {
+        this.alertMessage = response.message;
+        this.iconName = "danger";
+        this.title = "Login Failed";
       }
-
-    }
+      this.alertCustomStyle = { display: "grid" };
+    },
   },
-  mounted() {
-    
-  }
+  mounted() {},
 };
 </script>
 
