@@ -1,5 +1,6 @@
 <template>
   <div id="wrapper">
+    <Loader />
     <AlertMsg
       v-bind:title="title"
       v-bind:message="alertMessage"
@@ -58,12 +59,14 @@ import InputField from "../components/InputField";
 import FormValHelper from "../helper/formValHelper";
 import ApiHelper from "../helper/apiHelper";
 import AlertMsg from "../components/AlertMsg";
+import Loader from "../components/Loader";
 
 export default {
   name: "Signin",
   components: {
     InputField,
     AlertMsg,
+    Loader
   },
   data() {
     return {
@@ -92,7 +95,6 @@ export default {
       if(data.name == 'ok') {
         this.alertCustomStyle = {"display": "none"};
         this.$router.push({name: 'Home'});
-        // Redirect to Home
       }
     },
 
