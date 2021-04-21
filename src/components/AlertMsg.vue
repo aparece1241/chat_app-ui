@@ -1,15 +1,20 @@
 <template>
-  <div id="alert-cont">
-    <div class="alert-msg-cont" id="cont-wrapper">
-      <div class="alert-icon-cont" id="back-border"></div>
+  <div id="alert-cont" v-bind:style="customStyle">
+    <div v-bind:class="['alert-msg-cont', iconName]" id="cont-wrapper">
+      <div v-bind:class="['alert-icon-cont', iconName]" id="back-border"></div>
       <div class="alert-msg-cont" id="alert-inner-wrapper">
         <div class="alert-icon-cont">
-          <img id="alert" src="@/assets/icons/success.png" />
+          <img id="alert" v-bind:src="imgPath" />
         </div>
-        <div id="alert-content">This is alert</div>
+        <div id="alert-content-wrapper">
+          <div id="alert-content">
+            <h2>{{title}}</h2>
+            {{message}}
+          </div>
+        </div>
         <div id="alert-btn-cont">
-          <button>ok</button>
-          <button>cancel</button>
+          <button v-show="ok" class="alert-btn success" id="ok">ok</button>
+          <button v-show="cancel" class="alert-btn danger" id="cancel">cancel</button>
         </div>
       </div>
     </div>
@@ -25,45 +30,85 @@ export default {
     iconName: { type: String, default: "" },
     customStyle: { type: Object, default: null },
     customClass: { type: Object, default: null },
-    buttons: {
-      type: Object,
-      default() {
-        return { showAll: false, ok: true, cancel: false };
-      },
-    },
+    ok: {type: Boolean, default: true},
+    cancel: {type: Boolean, default: true},
   },
   data() {
-    return {};
+    return {
+    };
   },
   methods: {},
+  computed: {
+    imgPath() {
+      return require(`../assets/icons/${this.iconName}.png`); 
+    }
+  }
 };
 </script>
 
 <style scoped>
-#alert-inner-wrapper {
+#ok:hover {
+  background-color: #2d922d;
+}
+
+#cancel:hover {
+  background-color: #ff0e0e;
+}
+
+#alert-content {
+  text-align: center;
+  margin-top: 26px;
+}
+
+.alert-btn {
+  width: 5em;
+  height: 5em;
+  border-radius: 5em;
+  background: #8d4103;
+  border: none;
+  font-weight: 600;
+  color: rgb(242, 237, 215);
+  margin: 0px 6px;
+  cursor: pointer;
+  outline: none;
+}
+
+#alert-btn-cont {
+  position: absolute;
+  width: 88%;
+  display: flex;
+  justify-content: center;
+  bottom: 3em;
+}
+
+#alert-content-wrapper {
+  margin-top: 20px;
+  height: 100%;
+  display: grid;
+  justify-items: center;
+  color: #8d4103;
 }
 
 .info {
-  border: solid 4px #51b1de;
+  border: solid 4px #51b1de !important;
 }
 
 .danger {
-  border: solid #ff0e0e 4px;
+  border: solid #ff0e0e 4px !important;
 }
 
 .warning {
-  border: solid 4px orange;
+  border: solid 4px orange !important;
 }
 
 .success {
-  border: solid #2d922d 4px;
+  border: solid #2d922d 4px !important;
 }
 
 #cont-wrapper {
   padding: 0px;
   width: 328px;
   height: 328px;
-  border: solid #2d922d 4px;
 }
 
 #alert {
@@ -82,6 +127,7 @@ export default {
   justify-items: center;
   align-items: center;
   animation: fadeIn 0.5s 1;
+  display: none;
 }
 
 .alert-msg-cont {

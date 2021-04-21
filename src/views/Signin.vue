@@ -1,6 +1,12 @@
 <template>
   <div id="wrapper">
-    <AlertMsg />
+    <AlertMsg 
+      v-bind:title="title" 
+      v-bind:message="alertMessage" 
+      v-bind:iconName="iconName"
+      v-bind:customStyle="alertCustomStyle"
+      v-bind:ok="buttons.ok"
+      v-bind:cancel="buttons.cancel" />
     <div id="container">
       <div id="division-1" class="division">
         <div id="line-text">
@@ -59,6 +65,9 @@ export default {
     return {
       username: "",
       password: "",
+      alertMessage: "",
+      iconName: "success",
+      title: "",
       fieldValidation: {
         username: {
           valid: false,
@@ -69,7 +78,9 @@ export default {
           message: ''
         }
       },
-      isValidForm: false
+      isValidForm: false,
+      alertCustomStyle: {},
+      buttons: {ok: true, cancel: false}
     }
   },
   methods: {
@@ -102,12 +113,15 @@ export default {
 
       let response = await ApiHelper('/user/login', 'POST', data);
       if(!response.error) {
-        console.log('successfully login');
-        console.log(response);
+        this.iconName = "success";
+        this.title = "Login Successfully";
+        this.alertMessage = '';
       }else {
-        console.log(response);
+        this.alertMessage = response.message;
+        this.iconName = "danger";
+        this.title = "Login Failed";
       }
-
+      this.alertCustomStyle = {'display': 'grid'};
     }
   },
   mounted() {
