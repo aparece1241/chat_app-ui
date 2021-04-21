@@ -1,5 +1,14 @@
 <template>
   <div id="wrapper">
+    <AlertMsg
+      v-bind:title="title"
+      v-bind:message="alertMessage"
+      v-bind:iconName="iconName"
+      v-bind:customStyle="alertCustomStyle"
+      v-bind:ok="buttons.ok"
+      v-bind:cancel="buttons.cancel"
+      v-on:buttonClick="alertBtnClicked"
+    />
     <div id="container">
       <div id="division-1" class="division">
         <div class="msg-wrapper">
@@ -60,13 +69,15 @@
 
 <script>
 import InputField from "../components/InputField";
+import AlertMsg from "../components/AlertMsg";
 import apiHelper from "../helper/apiHelper";
-import valHelpers from '../helper/formValHelper';
+import valHelpers from "../helper/formValHelper";
 
 export default {
   name: "Sign-up",
   components: {
     InputField,
+    AlertMsg
   },
   data() {
     return {
@@ -78,39 +89,54 @@ export default {
       fieldValidation: {
         first_name: {
           valid: false,
-          message: ''
+          message: "",
         },
         last_name: {
           valid: false,
-          message: ''
+          message: "",
         },
         username: {
           valid: false,
-          message: ''
+          message: "",
         },
         password: {
           valid: false,
-          message: ''
-        }
-      }
+          message: "",
+        },
+      },
+      alertCustomStyle: {},
+      alertMessage: "",
+      iconName: "success",
+      title: "",
+      buttons: { ok: true, cancel: false },
     };
   },
   methods: {
+    alertBtnClicked(data) {
+      if(data.name == 'ok') {
+        this.alertCustomStyle = {"display": "none"};
+        this.$router.push({name: "Sign-in"});
+      }
+    },
+
     checkInput(data) {
       let validationRules = {
-        first_name: {length: 5},
-        last_name: {length: 5},
-        username: {length: 5},
-        password: {length: 8},
-      }
+        first_name: { length: 5 },
+        last_name: { length: 5 },
+        username: { length: 5 },
+        password: { length: 8 },
+      };
       let fieldName = data["eventName"];
       this[fieldName] = data["data"];
-      this.fieldValidation[fieldName] = valHelpers.checkLength(validationRules[fieldName].length, this[fieldName]);
-      this.isValidForm = this.fieldValidation.first_name.valid &&
-                         this.fieldValidation.last_name.valid &&
-                         this.fieldValidation.username.valid &&
-                         this.fieldValidation.password.valid;
-      console.log(this.isValidForm);
+      this.fieldValidation[fieldName] = valHelpers.checkLength(
+        validationRules[fieldName].length,
+        this[fieldName]
+      );
+      this.isValidForm =
+        this.fieldValidation.first_name.valid &&
+        this.fieldValidation.last_name.valid &&
+        this.fieldValidation.username.valid &&
+        this.fieldValidation.password.valid;
     },
 
     async submitData() {
@@ -118,23 +144,31 @@ export default {
         first_name: this.first_name,
         last_name: this.last_name,
         username: this.username,
-        password: this.password
+        password: this.password,
       };
-      if(!this.isValidForm) {
-        for(let field of Object.values(this.fieldValidation)){
-          field.message = field.valid ? '': field.message ? field.message : ' should not be empty!';
+      if (!this.isValidForm) {
+        for (let field of Object.values(this.fieldValidation)) {
+          field.message = field.valid
+            ? ""
+            : field.message
+            ? field.message
+            : " should not be empty!";
         }
         return;
       }
 
-      let response = await apiHelper('/user','POST', data);
-      if(!response.error) {
-        this.$router.push({name: 'Sign-in'});
-      }else {
-        console.log(response);
+      let response = await apiHelper("/user", "POST", data);
+      if (!response.error) {
+        this.iconName = "success";
+        this.title = "Successfully Registered!";
+        this.alertMessage = "Please sign in";
+      } else {
+        this.iconName = "danger";
+        this.title = "Registration Failed";
+        this.alertMessage = response.message;
       }
-      
-    }
+      this.alertCustomStyle = { display: "grid" };
+    },
   },
 };
 </script>

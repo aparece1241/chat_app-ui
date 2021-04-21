@@ -13,8 +13,8 @@
           </div>
         </div>
         <div id="alert-btn-cont">
-          <button v-show="ok" class="alert-btn success" id="ok">ok</button>
-          <button v-show="cancel" class="alert-btn danger" id="cancel">cancel</button>
+          <button v-show="ok" class="alert-btn success" v-on:click="buttonClicked('ok')" id="ok">ok</button>
+          <button v-show="cancel" class="alert-btn danger" v-on:click="buttonClicked('cancel')" id="cancel">cancel</button>
         </div>
       </div>
     </div>
@@ -37,7 +37,11 @@ export default {
     return {
     };
   },
-  methods: {},
+  methods: {
+    buttonClicked(buttonName) {
+      this.$emit('buttonClick', {name: buttonName});
+    }
+  },
   computed: {
     imgPath() {
       return require(`../assets/icons/${this.iconName}.png`); 
