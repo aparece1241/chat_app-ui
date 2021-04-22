@@ -1,5 +1,9 @@
 <template>
   <div id="wrapper">
+    <Loader
+      v-bind:message="'Registering . . .'"
+      v-bind:customStyle="loadingCustomStyle"
+    />
     <AlertMsg
       v-bind:title="title"
       v-bind:message="alertMessage"
@@ -70,6 +74,7 @@
 <script>
 import InputField from "../components/InputField";
 import AlertMsg from "../components/AlertMsg";
+import Loader from "../components/Loader";
 import apiHelper from "../helper/apiHelper";
 import valHelpers from "../helper/formValHelper";
 
@@ -77,7 +82,8 @@ export default {
   name: "Sign-up",
   components: {
     InputField,
-    AlertMsg
+    AlertMsg,
+    Loader,
   },
   data() {
     return {
@@ -105,6 +111,7 @@ export default {
         },
       },
       alertCustomStyle: {},
+      loadingCustomStyle: { display: "none" },
       alertMessage: "",
       iconName: "success",
       title: "",
@@ -113,9 +120,9 @@ export default {
   },
   methods: {
     alertBtnClicked(data) {
-      if(data.name == 'ok') {
-        this.alertCustomStyle = {"display": "none"};
-        this.$router.push({name: "Sign-in"});
+      if (data.name == "ok") {
+        this.alertCustomStyle = { display: "none" };
+        this.$router.push({ name: "Sign-in" });
       }
     },
 
@@ -146,7 +153,10 @@ export default {
         username: this.username,
         password: this.password,
       };
+
+      this.loadingCustomStyle = { display: "grid" };
       if (!this.isValidForm) {
+        this.loadingCustomStyle = { display: "none" };
         for (let field of Object.values(this.fieldValidation)) {
           field.message = field.valid
             ? ""
@@ -158,6 +168,7 @@ export default {
       }
 
       let response = await apiHelper("/user", "POST", data);
+      this.loadingCustomStyle = { display: "none" };
       if (!response.error) {
         this.iconName = "success";
         this.title = "Successfully Registered!";

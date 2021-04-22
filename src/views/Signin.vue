@@ -1,5 +1,6 @@
 <template>
   <div id="wrapper">
+    <Loader v-bind:message="'Logging in . . .'" v-bind:customStyle="loadingCustomStyle" />
     <AlertMsg
       v-bind:title="title"
       v-bind:message="alertMessage"
@@ -58,12 +59,14 @@ import InputField from "../components/InputField";
 import FormValHelper from "../helper/formValHelper";
 import ApiHelper from "../helper/apiHelper";
 import AlertMsg from "../components/AlertMsg";
+import Loader from "../components/Loader";
 
 export default {
   name: "Signin",
   components: {
     InputField,
     AlertMsg,
+    Loader
   },
   data() {
     return {
@@ -81,6 +84,7 @@ export default {
       },
       isValidForm: false,
       alertCustomStyle: {},
+      loadingCustomStyle: {'display': 'none !important'},
       alertMessage: "",
       iconName: "success",
       title: "",
@@ -92,7 +96,6 @@ export default {
       if(data.name == 'ok') {
         this.alertCustomStyle = {"display": "none"};
         this.$router.push({name: 'Home'});
-        // Redirect to Home
       }
     },
 
@@ -120,7 +123,9 @@ export default {
         password: this.password,
       };
 
+      this.loadingCustomStyle = {"display":"grid"};
       if (!this.isValidForm) {
+      this.loadingCustomStyle = {"display":"none"};
         for (let field of Object.values(this.fieldValidation)) {
           field.message = field.valid
             ? ""
@@ -132,6 +137,7 @@ export default {
       }
 
       let response = await ApiHelper("/user/login", "POST", data);
+      this.loadingCustomStyle = {'display': 'none'};
       if (!response.error) {
         this.iconName = "success";
         this.title = "Login Successfully";
