@@ -1,6 +1,6 @@
 <template>
   <div id="wrapper">
-    <Loader />
+    <Loader v-bind:message="'Logging in . . .'" v-bind:customStyle="loadingCustomStyle" />
     <AlertMsg
       v-bind:title="title"
       v-bind:message="alertMessage"
@@ -84,6 +84,7 @@ export default {
       },
       isValidForm: false,
       alertCustomStyle: {},
+      loadingCustomStyle: {'display': 'none !important'},
       alertMessage: "",
       iconName: "success",
       title: "",
@@ -122,7 +123,9 @@ export default {
         password: this.password,
       };
 
+      this.loadingCustomStyle = {"display":"grid"};
       if (!this.isValidForm) {
+      this.loadingCustomStyle = {"display":"none"};
         for (let field of Object.values(this.fieldValidation)) {
           field.message = field.valid
             ? ""
@@ -134,6 +137,7 @@ export default {
       }
 
       let response = await ApiHelper("/user/login", "POST", data);
+      this.loadingCustomStyle = {'display': 'none'};
       if (!response.error) {
         this.iconName = "success";
         this.title = "Login Successfully";
