@@ -1,6 +1,9 @@
 <template>
   <div id="wrapper">
-    <Loader v-bind:message="'Logging in . . .'" v-bind:customStyle="loadingCustomStyle" />
+    <Loader
+      v-bind:message="'Logging in . . .'"
+      v-bind:customStyle="loadingCustomStyle"
+    />
     <AlertMsg
       v-bind:title="title"
       v-bind:message="alertMessage"
@@ -60,13 +63,14 @@ import FormValHelper from "../helper/formValHelper";
 import ApiHelper from "../helper/apiHelper";
 import AlertMsg from "../components/AlertMsg";
 import Loader from "../components/Loader";
+import store from "../store";
 
 export default {
   name: "Signin",
   components: {
     InputField,
     AlertMsg,
-    Loader
+    Loader,
   },
   data() {
     return {
@@ -84,7 +88,7 @@ export default {
       },
       isValidForm: false,
       alertCustomStyle: {},
-      loadingCustomStyle: {'display': 'none !important'},
+      loadingCustomStyle: { display: "none !important" },
       alertMessage: "",
       iconName: "success",
       title: "",
@@ -93,9 +97,9 @@ export default {
   },
   methods: {
     alertBtnClicked(data) {
-      if(data.name == 'ok') {
-        this.alertCustomStyle = {"display": "none"};
-        this.$router.push({name: 'Home'});
+      if (data.name == "ok") {
+        this.alertCustomStyle = { display: "none" };
+        this.$router.push({ name: "Home" });
       }
     },
 
@@ -123,9 +127,9 @@ export default {
         password: this.password,
       };
 
-      this.loadingCustomStyle = {"display":"grid"};
+      this.loadingCustomStyle = { display: "grid" };
       if (!this.isValidForm) {
-      this.loadingCustomStyle = {"display":"none"};
+        this.loadingCustomStyle = { display: "none" };
         for (let field of Object.values(this.fieldValidation)) {
           field.message = field.valid
             ? ""
@@ -137,11 +141,19 @@ export default {
       }
 
       let response = await ApiHelper("/user/login", "POST", data);
-      this.loadingCustomStyle = {'display': 'none'};
+      this.loadingCustomStyle = { display: "none" };
       if (!response.error) {
         this.iconName = "success";
         this.title = "Login Successfully";
-        this.alertMessage = "";
+        this.alertMessage = response.message;
+        let data = {
+          username: response.data.user.username,
+          token: response.data.token,
+          profile_img: response.data.user.profile_img,
+          id: response.data.user._id
+        };
+
+        store.commit("setUserState", data);
       } else {
         this.alertMessage = response.message;
         this.iconName = "danger";

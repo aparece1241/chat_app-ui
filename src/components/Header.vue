@@ -24,7 +24,7 @@
         <span class="username">Hello {{ user.username }}</span>
         <div id="dropdown" v-show="showCollapsible">
           <p class="ghost-nav-item">My Profile</p>
-          <p class="ghost-nav-item">Sign out</p>
+          <p class="ghost-nav-item" v-on:click="logout">Sign out</p>
         </div>
       </div>
       <div id="button-cont">
@@ -56,14 +56,14 @@
         </div>
         <div id="wrapper-sub-nav" v-show="showCollapsible">
           <p class="ghost-nav-item">My Profile</p>
-          <p class="ghost-nav-item">Sign out</p>
+          <p class="ghost-nav-item" v-on:click="logout">Sign out</p>
         </div>
         <p class="ghost-nav-item">Services</p>
         <p class="ghost-nav-item">About</p>
-        <router-link to="/sign-in"
+        <router-link to="/sign-in" v-if="!user.username"
           ><p class="ghost-nav-item">Sign in</p></router-link
         >
-        <router-link to="/sign-up"
+        <router-link to="/sign-up" v-if="!user.username"
           ><p class="ghost-nav-item">Sign up</p></router-link
         >
       </div>
@@ -75,10 +75,10 @@
         <span id="logo-text">mstalk</span>
       </div>
       <div id="navs">
-        <router-link to="/sign-up"
+        <router-link to="/sign-up" v-if="!user.username"
           ><span class="nav-item">Sign up</span></router-link
         >
-        <router-link to="/sign-in"
+        <router-link to="/sign-in" v-if="!user.username"
           ><span class="nav-item">Sign in</span></router-link
         >
         <span class="nav-item">About</span>
@@ -97,10 +97,10 @@
       <div id="ghost-navs" v-show="showNav">
         <p class="ghost-nav-item">Services</p>
         <p class="ghost-nav-item">About</p>
-        <router-link to="/sign-in"
+        <router-link to="/sign-in" v-if="!user.username"
           ><p class="ghost-nav-item">Sign in</p></router-link
         >
-        <router-link to="/sign-up"
+        <router-link to="/sign-up" v-if="!user.username"
           ><p class="ghost-nav-item">Sign up</p></router-link
         >
       </div>
@@ -131,12 +131,17 @@ export default {
     toggleCollapsible() {
       this.showCollapsible = !this.showCollapsible;
     },
+    logout() {
+      store.commit('setUserState', {});
+      this.$router.push({name: 'Sign-in'});
+    }
   },
   computed: {},
   created() {
+    },
+  mounted() {
     this.user = store.getters.getUserState;
   },
-  mounted() {},
 };
 </script>
 
