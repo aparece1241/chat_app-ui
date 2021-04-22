@@ -3,15 +3,15 @@
     <Header />
     <div id="sub-header">
       <div class="container" id="content-sub-header">
-        <span id="expand-bar"
-          v-on:click="toogleSideNav"><i class="fa fa-indent" aria-hidden="true"></i
+        <span id="expand-bar" v-on:click="toogleSideNav"
+          ><i class="fa fa-indent" aria-hidden="true"></i
         ></span>
         <span id="convo-title">Conversation Name</span>
       </div>
     </div>
     <div class="container" id="content">
       <div class="division" id="side-nav"></div>
-      <div class="division">
+      <div class="division" id="message-area">
         <div id="text-msg-cont">
           <InputField
             type="textarea"
@@ -65,18 +65,22 @@ export default {
   },
   data() {
     return {
-      showSideBar: false
-    }
+      showSideBar: false,
+    };
   },
   methods: {
-    toogleSideNav () {
+    toogleSideNav() {
       this.showSideBar = !this.showSideBar;
-    }
-  }
+    },
+  },
 };
 </script>
 
 <style scoped>
+#message-area {
+  background-color: white;
+}
+
 .button {
   background-color: #f5f4ef;
   border: none;
@@ -98,7 +102,7 @@ export default {
 .home {
   display: grid;
   justify-items: center;
-  background-color: white !important;
+  background-color: #9e9aa3 !important;
 }
 
 .container {
@@ -212,8 +216,12 @@ export default {
 
 /* Keyframes */
 @keyframes slide {
-  from {left:-123px}
-  to{left: 0px}
+  from {
+    left: -123px;
+  }
+  to {
+    left: 0px;
+  }
 }
 
 /* Media queries */
@@ -234,7 +242,6 @@ export default {
   #text-msg-cont {
     width: 1173px;
   }
-
 }
 
 @media screen and (min-width: 900px) {
