@@ -56,6 +56,7 @@
 // @ is an alias to /src
 import Header from "../components/Header";
 import InputField from "../components/InputField";
+import socket from "../plugins/socketio-client";
 
 export default {
   name: "Home",
@@ -71,7 +72,13 @@ export default {
   methods: {
     toogleSideNav () {
       this.showSideBar = !this.showSideBar;
-    }
+    },
+  created() {
+
+  },
+  mounted() {
+    socket.initializedSocket();
+  }
   }
 };
 </script>
