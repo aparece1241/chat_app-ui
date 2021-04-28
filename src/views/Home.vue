@@ -3,8 +3,8 @@
     <Header />
     <div id="sub-header">
       <div class="container" id="content-sub-header">
-        <span id="expand-bar"
-          v-on:click="toogleSideNav"><i class="fa fa-indent" aria-hidden="true"></i
+        <span id="expand-bar" v-on:click="toogleSideNav"
+          ><i class="fa fa-indent" aria-hidden="true"></i
         ></span>
         <span id="convo-title">Conversation Name</span>
       </div>
@@ -18,6 +18,8 @@
             name="text-message"
             placeholder="text message . . ."
             v-bind:className="['input-field-mod']"
+            ref="text-message"
+            v-on:input="getInput"
             v-bind:inputClass="{
               'background-color': '#f5f4ef',
               'font-size': '1em',
@@ -32,7 +34,7 @@
             <button class="button" id="emoji">
               <span><i class="fa fa-smile-o" aria-hidden="true"></i></span>
             </button>
-            <button class="button" id="send">
+            <button class="button" id="send" v-on:click="sendMsg">
               <span
                 ><i class="fa fa-paper-plane-o" aria-hidden="true"></i
               ></span>
@@ -56,6 +58,7 @@
 // @ is an alias to /src
 import Header from "../components/Header";
 import InputField from "../components/InputField";
+import socket from "../plugins/socketio-client";
 
 export default {
   name: "Home",
@@ -65,14 +68,38 @@ export default {
   },
   data() {
     return {
-      showSideBar: false
-    }
+      showSideBar: false,
+      msg: ''
+    };
   },
   methods: {
-    toogleSideNav () {
+    toogleSideNav() {
       this.showSideBar = !this.showSideBar;
+    },
+
+    getInput(data) {
+      this.msg = data.data;
+    },  
+
+    recieveMsg(data) {
+      console.log(data);
+    },
+
+    sendMsg() {
+      socket.addEventEmitter({'type': 'message', 'data': this.msg});
+      socket.addEventListener({'type': 'message', 'callback': this.recieveMsg});
+      console.log(this.$refs['text-message'].data = '');
+      this.msg = '';
+    },
+
+    connectSocket() {
+      socket.initializedSocket();
     }
-  }
+  },
+  created() {},
+  mounted() {
+    this.connectSocket();
+  },
 };
 </script>
 
@@ -212,8 +239,12 @@ export default {
 
 /* Keyframes */
 @keyframes slide {
-  from {left:-123px}
-  to{left: 0px}
+  from {
+    left: -123px;
+  }
+  to {
+    left: 0px;
+  }
 }
 
 /* Media queries */
@@ -234,7 +265,6 @@ export default {
   #text-msg-cont {
     width: 1173px;
   }
-
 }
 
 @media screen and (min-width: 900px) {
