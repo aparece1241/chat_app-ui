@@ -111,6 +111,7 @@
 <script>
 import store from "../store/index";
 import InputField from "../components/InputField";
+import socket from "../plugins/socketio-client";
 
 export default {
   name: "Header",
@@ -134,6 +135,7 @@ export default {
     logout() {
       store.commit('setUserState', {});
       this.$router.push({name: 'Sign-in'});
+      socket.disConnectSocket();
     }
   },
   computed: {},
