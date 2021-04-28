@@ -1,7 +1,7 @@
 import {io} from "socket.io-client";
 
 let socket = undefined;
-let url = 'https://mstalk.herokuapp.com/';
+let url = (process.env.NODE_ENV == 'production')? 'https://mstalk.herokuapp.com/': 'http://localhost:4000/';
 
 function initializedSocket() {
     if(!socket) {
