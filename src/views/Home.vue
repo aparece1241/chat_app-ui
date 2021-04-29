@@ -12,6 +12,9 @@
     <div class="container" id="content">
       <div class="division" id="side-nav"></div>
       <div class="division">
+        <div id="msg-cont-wrapper">
+          <Message v-bind:message="'This is a message'" v-bind:messageType="'my-message'" />
+        </div>
         <div id="text-msg-cont">
           <InputField
             type="textarea"
@@ -59,17 +62,19 @@
 import Header from "../components/Header";
 import InputField from "../components/InputField";
 import socket from "../plugins/socketio-client";
+import Message from "../components/Message";
 
 export default {
   name: "Home",
   components: {
     Header,
     InputField,
+    Message,
   },
   data() {
     return {
       showSideBar: false,
-      msg: ''
+      msg: "",
     };
   },
   methods: {
@@ -79,22 +84,22 @@ export default {
 
     getInput(data) {
       this.msg = data.data;
-    },  
+    },
 
     recieveMsg(data) {
       console.log(data);
     },
 
     sendMsg() {
-      socket.addEventEmitter({'type': 'message', 'data': this.msg});
-      socket.addEventListener({'type': 'message', 'callback': this.recieveMsg});
-      console.log(this.$refs['text-message'].data = '');
-      this.msg = '';
+      socket.addEventEmitter({ type: "message", data: this.msg });
+      socket.addEventListener({ type: "message", callback: this.recieveMsg });
+      console.log((this.$refs["text-message"].data = ""));
+      this.msg = "";
     },
 
     connectSocket() {
       socket.initializedSocket();
-    }
+    },
   },
   created() {},
   mounted() {
@@ -156,6 +161,7 @@ export default {
   border-bottom: 1px solid rgb(187, 178, 178);
   border-top: 1px solid rgb(175, 171, 171);
   width: 100%;
+  background-color: white !important;
 }
 
 #side-nav {
@@ -235,6 +241,14 @@ export default {
 #return-arrow:hover {
   color: #f2edd7;
   background-color: #755139;
+}
+
+#msg-cont-wrapper {
+  position: absolute;
+  top: 50px;
+  width: 99.68%;
+  height: 100%;
+  padding-top: 92px;
 }
 
 /* Keyframes */
