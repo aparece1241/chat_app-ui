@@ -256,12 +256,12 @@ export default {
 }
 
 #msg-cont-wrapper {
-  position: absolute;
-  top: 50px;
+  position: fixed;
+  /* top: 50px; */
   width: 99.68%;
-  height: 58%;
-  padding-top: 10px;
-  margin-bottom: 102px;
+  height: 52%;
+  padding-top: 4em;
+  padding-bottom: 4em;
   background-color: white;
   overflow: auto;
 }
