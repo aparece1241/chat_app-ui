@@ -256,7 +256,7 @@ export default {
 }
 
 #msg-cont-wrapper {
-  position: fixed;
+  position: absolute;
   /* top: 50px; */
   width: 99.68%;
   height: 52%;
