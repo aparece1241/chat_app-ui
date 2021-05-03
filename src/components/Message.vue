@@ -11,12 +11,16 @@ export default {
     message: { type: String, required: true },
     messageType: { type: String, required: true },
   },
+  computed: {
+
+  }
+
 };
 </script>
 
 <style scoped>
 #message-cont {
-  border: none;
+  border: none;  
 }
 
 #message-show {
@@ -24,6 +28,9 @@ export default {
   padding: 8px;
   border-radius: 12px;
   margin-left: 7px;
+  text-align: justify;
+  width: 50%;
+  margin: 5px 0px;
 }
 
 .my-message {
