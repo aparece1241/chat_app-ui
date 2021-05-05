@@ -10,7 +10,9 @@
       </div>
     </div>
     <div class="container" id="content">
-      <div class="division" id="side-nav"></div>
+      <div class="division" id="side-nav">
+        <div id="contact"></div>
+      </div>
       <div class="division" id="msg-portal">
         <div id="msg-cont-wrapper" ref="msg-container">
           <Message
@@ -105,7 +107,7 @@ export default {
       let childNum = this.$refs["msg-container"].children.length;
       let contHeight = this.$refs["msg-container"].offsetHeight;
       this.$refs["msg-container"].scrollTop = childNum * contHeight;
-  },
+    },
 
     sendMsg() {
       socket.addEventEmitter({ type: "message", data: this.msg });
@@ -126,6 +128,13 @@ export default {
 </script>
 
 <style scoped>
+#contact {
+  margin-top: 63px;
+  height: 100%;
+  background-color: #f2edd7;
+  border-radius: 12px;
+}
+
 #msg-portal {
   position: relative;
   height: calc(100% - 170px);
@@ -183,15 +192,17 @@ export default {
 #content-sub-header {
   display: flex;
   align-items: center;
-  border-bottom: 1px solid rgb(187, 178, 178);
-  border-top: 1px solid rgb(175, 171, 171);
   width: 100%;
   background-color: white !important;
+  box-shadow: 0px 0px 3px #e6e3e3;
+  border-radius: 10px;
+  margin-top: 5px;
 }
 
 #side-nav {
-  background-color: #f2edd7;
-  border-right: rgb(187, 178, 178) solid 1px;
+  /* background-color: #f2edd7; */
+  background-color: white;
+  /* border-right: rgb(187, 178, 178) solid 1px; */
 }
 
 #convo-title {
