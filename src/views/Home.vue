@@ -11,9 +11,16 @@
     </div>
     <div class="container" id="content">
       <div class="division" id="side-nav"></div>
-      <div class="division">
-        <div id="msg-cont-wrapper">
-          <Message v-bind:message="'This is a message'" v-bind:messageType="'my-message'" />
+      <div class="division" id="msg-portal">
+        <div id="msg-cont-wrapper" ref="msg-container">
+          <Message
+            v-bind:message="'This is a very long long long long long long logn long long long long long long long long long long long long long long long long long long message'"
+            v-bind:messageType="'my-message'"
+          />
+          <Message
+            v-bind:message="'yeah surely its to long!'"
+            v-bind:messageType="'incoming-message'"
+          />
         </div>
         <div id="text-msg-cont">
           <InputField
@@ -63,6 +70,7 @@ import Header from "../components/Header";
 import InputField from "../components/InputField";
 import socket from "../plugins/socketio-client";
 import Message from "../components/Message";
+import Vue from "vue";
 
 export default {
   name: "Home",
@@ -87,12 +95,20 @@ export default {
     },
 
     recieveMsg(data) {
-      console.log(data);
-    },
+      let Msg = Vue.extend(Message);
+      let Msgs = new Msg({
+        propsData: { message: data, messageType: "incoming-message" },
+      });
+      Msgs.$mount();
+      this.$refs["msg-container"].scrollTop = 100;
+      this.$refs["msg-container"].appendChild(Msgs.$el);
+      let childNum = this.$refs["msg-container"].children.length;
+      let contHeight = this.$refs["msg-container"].offsetHeight;
+      this.$refs["msg-container"].scrollTop = childNum * contHeight;
+  },
 
     sendMsg() {
       socket.addEventEmitter({ type: "message", data: this.msg });
-      socket.addEventListener({ type: "message", callback: this.recieveMsg });
       console.log((this.$refs["text-message"].data = ""));
       this.msg = "";
     },
@@ -104,11 +120,17 @@ export default {
   created() {},
   mounted() {
     this.connectSocket();
+    socket.addEventListener({ type: "message", callback: this.recieveMsg });
   },
 };
 </script>
 
 <style scoped>
+#msg-portal {
+  position: relative;
+  height: calc(100% - 170px);
+}
+
 .button {
   background-color: #f5f4ef;
   border: none;
@@ -131,6 +153,9 @@ export default {
   display: grid;
   justify-items: center;
   background-color: white !important;
+  position: fixed;
+  width: 100vw;
+  height: 100vh;
 }
 
 .container {
@@ -245,10 +270,16 @@ export default {
 
 #msg-cont-wrapper {
   position: absolute;
-  top: 50px;
+  /* top: 50px; */
   width: 99.68%;
-  height: 100%;
-  padding-top: 92px;
+  height: calc(100% - 64px);
+  padding-top: 4em;
+  background-color: white;
+  overflow: auto;
+}
+
+#msg-cont-wrapper::-webkit-scrollbar {
+  display: none;
 }
 
 /* Keyframes */

@@ -14,7 +14,6 @@ function initializedSocket() {
 
 function addEventListener(event) {
     socket.on(event.type, event.callback);
-    console.log(event);
 }
 
 function addEventEmitter(event) {
@@ -22,7 +21,6 @@ function addEventEmitter(event) {
 }
 
 function disConnectSocket() {
-    console.log(socket);
     socket.disconnect();
 }
 
