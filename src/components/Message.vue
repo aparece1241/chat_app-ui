@@ -22,6 +22,7 @@ export default {
   width: 50%;
   background: none !important;
   border: solid white;
+  clear: both;
 }
 
 #message-cont {

@@ -101,8 +101,12 @@ export default {
         propsData: { message: data, messageType: "my-message" },
       });
       Msgs.$mount();
+      this.$refs["msg-container"].scrollTop = 100;
       this.$refs["msg-container"].appendChild(Msgs.$el);
-    },
+      let childNum = this.$refs["msg-container"].children.length;
+      let contHeight = this.$refs["msg-container"].offsetHeight;
+      this.$refs["msg-container"].scrollTop = childNum * contHeight;
+  },
 
     sendMsg() {
       socket.addEventEmitter({ type: "message", data: this.msg });
