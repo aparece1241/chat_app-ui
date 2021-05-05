@@ -37,6 +37,7 @@ export default {
   margin: 5px 0px;
   max-width: 100%;
   overflow-wrap: anywhere;
+  white-space: pre-wrap;
 }
 
 .my-message {
