@@ -98,7 +98,7 @@ export default {
       console.log("this is data", data);
       let Msg = Vue.extend(Message);
       let Msgs = new Msg({
-        propsData: { message: data, messageType: "my-message" },
+        propsData: { message: data, messageType: "incoming-message" },
       });
       Msgs.$mount();
       this.$refs["msg-container"].scrollTop = 100;

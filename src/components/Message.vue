@@ -42,12 +42,12 @@ export default {
 }
 
 .my-message {
-  float: left;
-  background-color: rgb(0 0 0 / 50%);
+  float: right;
+  background-color: rgb(171 128 51) !important;
 }
 
 .incoming-message {
-  float: right;
-  background-color: rgb(171 128 51) !important;
+  float: left;
+  background-color: rgb(0 0 0 / 50%);
 }
 </style>
