@@ -1,6 +1,8 @@
 <template>
   <div id="message-cont">
-    <span v-bind:class="messageType" id="message-show">{{ message }}</span>
+    <div id="wrap" v-bind:class="messageType">
+      <span v-bind:class="messageType" id="message-show">{{ message }}</span>
+    </div>
   </div>
 </template>
 
@@ -11,16 +13,19 @@ export default {
     message: { type: String, required: true },
     messageType: { type: String, required: true },
   },
-  computed: {
-
-  }
-
+  computed: {},
 };
 </script>
 
 <style scoped>
+#wrap {
+  width: 50%;
+  background: none !important;
+  border: solid white;
+}
+
 #message-cont {
-  border: none;  
+  border: none;
 }
 
 #message-show {
@@ -29,17 +34,16 @@ export default {
   border-radius: 12px;
   margin-left: 7px;
   text-align: justify;
-  width: 50%;
   margin: 5px 0px;
 }
 
 .my-message {
-  float: right;
-  background-color: rgb(0 0 0 / 50%)
+  float: left;
+  background-color: rgb(0 0 0 / 50%);
 }
 
 .incoming-message {
+  float: right;
   background-color: rgb(171 128 51) !important;
-  float: left;
 }
 </style>
