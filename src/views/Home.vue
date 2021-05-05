@@ -96,10 +96,10 @@ export default {
       this.msg = data.data;
     },
 
-    recieveMsg(data) {
+    showMessage(data, messageType) {
       let Msg = Vue.extend(Message);
       let Msgs = new Msg({
-        propsData: { message: data, messageType: "incoming-message" },
+        propsData: { message: data, messageType: messageType },
       });
       Msgs.$mount();
       this.$refs["msg-container"].scrollTop = 100;
@@ -107,6 +107,10 @@ export default {
       let childNum = this.$refs["msg-container"].children.length;
       let contHeight = this.$refs["msg-container"].offsetHeight;
       this.$refs["msg-container"].scrollTop = childNum * contHeight;
+    },
+
+    recieveMsg(data) {
+      this.showMessage(data, "incoming-message");
     },
 
     sendMsg() {
