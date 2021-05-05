@@ -21,7 +21,6 @@ function addEventEmitter(event) {
 }
 
 function disConnectSocket() {
-    console.log(socket);
     socket.disconnect();
 }
 

@@ -95,7 +95,6 @@ export default {
     },
 
     recieveMsg(data) {
-      console.log("this is data", data);
       let Msg = Vue.extend(Message);
       let Msgs = new Msg({
         propsData: { message: data, messageType: "incoming-message" },
