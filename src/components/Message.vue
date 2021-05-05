@@ -35,6 +35,8 @@ export default {
   margin-left: 7px;
   text-align: justify;
   margin: 5px 0px;
+  max-width: 100%;
+  overflow-wrap: anywhere;
 }
 
 .my-message {
