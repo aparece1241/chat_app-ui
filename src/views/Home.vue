@@ -96,10 +96,10 @@ export default {
       this.msg = data.data;
     },
 
-    recieveMsg(data) {
+    appendMessage(message, type) {
       let Msg = Vue.extend(Message);
       let Msgs = new Msg({
-        propsData: { message: data, messageType: "incoming-message" },
+        propsData: { message: message, messageType: type },
       });
       Msgs.$mount();
       this.$refs["msg-container"].scrollTop = 100;
@@ -109,9 +109,25 @@ export default {
       this.$refs["msg-container"].scrollTop = childNum * contHeight;
     },
 
+    recieveMsg(data) {
+      // let Msg = Vue.extend(Message);
+      // let Msgs = new Msg({
+      //   propsData: { message: data, messageType: "incoming-message" },
+      // });
+      // Msgs.$mount();
+      // this.$refs["msg-container"].scrollTop = 100;
+      // this.$refs["msg-container"].appendChild(Msgs.$el);
+      // let childNum = this.$refs["msg-container"].children.length;
+      // let contHeight = this.$refs["msg-container"].offsetHeight;
+      // this.$refs["msg-container"].scrollTop = childNum * contHeight;
+      this.appendMessage(data, "incoming-message");
+    },
+
     sendMsg() {
       socket.addEventEmitter({ type: "message", data: this.msg });
-      console.log((this.$refs["text-message"].data = ""));
+      this.appendMessage(this.msg, "my-message");
+      // Clear the message
+      this.$refs["text-message"].data = "";
       this.msg = "";
     },
 
