@@ -145,7 +145,7 @@ export default {
 
 <style scoped>
 #contact {
-  margin-top: 63px;
+  margin-top: 59px;
   height: 100%;
   background-color: #f2edd7;
   border-radius: 12px;
@@ -211,8 +211,8 @@ export default {
   width: 100%;
   background-color: white !important;
   box-shadow: 0px 0px 3px #e6e3e3;
-  border-radius: 10px;
-  margin-top: 5px;
+  /* border-radius: 10px;
+  margin-top: 5px; */
 }
 
 #side-nav {
