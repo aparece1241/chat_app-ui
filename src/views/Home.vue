@@ -96,6 +96,10 @@ export default {
       this.msg = data.data;
     },
 
+    getOnline(online) {
+      console.log(online);
+    },
+
     appendMessage(message, type) {
       let Msg = Vue.extend(Message);
       let Msgs = new Msg({
@@ -131,6 +135,11 @@ export default {
       this.msg = "";
     },
 
+    // Show the pop-up error
+    showPopup(data) {
+      console.log(data);
+    },
+
     connectSocket() {
       socket.initializedSocket();
     },
@@ -139,6 +148,8 @@ export default {
   mounted() {
     this.connectSocket();
     socket.addEventListener({ type: "message", callback: this.recieveMsg });
+    socket.addEventListener({ type: "active-users", callback: this.getOnline });
+    socket.addEventListener({ type: "connect_error", callback: this.showPopup })
   },
 };
 </script>
@@ -148,7 +159,7 @@ export default {
   margin-top: 59px;
   height: 100%;
   background-color: #f2edd7;
-  border-radius: 12px;
+  border-radius: 4px;
 }
 
 #msg-portal {
