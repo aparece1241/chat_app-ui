@@ -1,4 +1,5 @@
 import {io} from "socket.io-client";
+import store from "../store";
 
 let socket = undefined;
 let url = (process.env.NODE_ENV == 'production')? 'https://mstalk.herokuapp.com/': 'http://localhost:4000/';
@@ -6,7 +7,8 @@ let url = (process.env.NODE_ENV == 'production')? 'https://mstalk.herokuapp.com/
 function initializedSocket() {
     if(!socket) {
         socket = io(url, {
-            autoConnect: true
+            autoConnect: true,
+            auth: {username: store.state.user.username}
         });
     }
     return socket;
