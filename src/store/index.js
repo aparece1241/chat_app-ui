@@ -10,6 +10,8 @@ import MessageModule from './message/index'
 Vue.use(Vuex)
 
 export default new Vuex.Store({
+  state: {
+  },
   modules: {
     UserModule,
     AuthModule,
@@ -32,7 +34,7 @@ export default new Vuex.Store({
     },
     setSocketState(state, socket) {
       state.socket = socket;
-    } 
+    }
   },
   actions: {
   }, */

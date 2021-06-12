@@ -60,10 +60,9 @@
 <script>
 import InputField from "../components/InputField";
 import FormValHelper from "../helper/formValHelper";
-import ApiHelper from "../helper/apiHelper";
 import AlertMsg from "../components/AlertMsg";
 import Loader from "../components/Loader";
-import store from "../store";
+import { mapActions, mapMutations } from 'vuex';
 
 export default {
   name: "Signin",
@@ -96,6 +95,8 @@ export default {
     };
   },
   methods: {
+    ...mapActions({'login':'AuthModule/login'}),
+    ...mapMutations({'setUserState': 'AuthModule/setUserState'}),
     alertBtnClicked(data) {
       if (data.name == "ok") {
         this.alertCustomStyle = { display: "none" };
@@ -127,6 +128,8 @@ export default {
         password: this.password,
       };
 
+      // Register the actions here
+
       this.loadingCustomStyle = { display: "grid" };
       if (!this.isValidForm) {
         this.loadingCustomStyle = { display: "none" };
@@ -140,7 +143,8 @@ export default {
         return;
       }
 
-      let response = await ApiHelper("/user/login", "POST", data);
+      // login api call here 
+      const response = await this.login(data);
       this.loadingCustomStyle = { display: "none" };
       if (!response.error) {
         this.iconName = "success";
@@ -153,7 +157,8 @@ export default {
           id: response.data.user._id
         };
 
-        store.commit("setUserState", data);
+        this.setUserState(data);
+        this.$router.push({name: 'Home'})
       } else {
         this.alertMessage = response.message;
         this.iconName = "danger";

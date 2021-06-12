@@ -1,5 +1,5 @@
+let baseUrl = 'https://mstalk.herokuapp.com';
 const apiRequest = async (url, method='GET', props=null) => {
-    let baseUrl = 'https://mstalk.herokuapp.com';
     
     let options = {
         method: method
@@ -17,4 +17,4 @@ const apiRequest = async (url, method='GET', props=null) => {
     return resObj;
 }
 
-export default apiRequest;
+export default {baseUrl, apiRequest};

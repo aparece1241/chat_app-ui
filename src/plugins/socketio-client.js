@@ -4,11 +4,14 @@ import store from "../store";
 let socket = undefined;
 let url = (process.env.NODE_ENV == 'production')? 'https://mstalk.herokuapp.com/': 'http://localhost:4000/';
 
+// get the username
+const username = store.getters['AuthModule/getAuthUser']['username']
+
 function initializedSocket() {
     if(!socket) {
         socket = io(url, {
             autoConnect: true,
-            auth: {username: store.state.user.username}
+            auth: {username: username}
         });
     }
     return socket;

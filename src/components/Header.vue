@@ -1,7 +1,7 @@
 <template>
   <div id="header">
     <!-- If there is ang authenticated user -->
-    <div class="containerv2" v-if="user.username">
+    <div class="containerv2" v-if="!isUserObjEmpty">
       <div id="logo">
         <span id="logo-text">mstalk</span>
       </div>
@@ -60,25 +60,25 @@
         </div>
         <p class="ghost-nav-item">Services</p>
         <p class="ghost-nav-item">About</p>
-        <router-link to="/sign-in" v-if="!user.username"
+        <router-link to="/sign-in" v-if="isUserObjEmpty"
           ><p class="ghost-nav-item">Sign in</p></router-link
         >
-        <router-link to="/sign-up" v-if="!user.username"
+        <router-link to="/sign-up" v-if="isUserObjEmpty"
           ><p class="ghost-nav-item">Sign up</p></router-link
         >
       </div>
     </div>
 
     <!-- If there is no authenticated user -->
-    <div class="container" v-if="!user.username">
+    <div class="container" v-if="isUserObjEmpty">
       <div id="logo">
         <span id="logo-text">mstalk</span>
       </div>
       <div id="navs">
-        <router-link to="/sign-up" v-if="!user.username"
+        <router-link to="/sign-up" v-if="isUserObjEmpty"
           ><span class="nav-item">Sign up</span></router-link
         >
-        <router-link to="/sign-in" v-if="!user.username"
+        <router-link to="/sign-in" v-if="isUserObjEmpty"
           ><span class="nav-item">Sign in</span></router-link
         >
         <span class="nav-item">About</span>
@@ -97,10 +97,10 @@
       <div id="ghost-navs" v-show="showNav">
         <p class="ghost-nav-item">Services</p>
         <p class="ghost-nav-item">About</p>
-        <router-link to="/sign-in" v-if="!user.username"
+        <router-link to="/sign-in" v-if="isUserObjEmpty"
           ><p class="ghost-nav-item">Sign in</p></router-link
         >
-        <router-link to="/sign-up" v-if="!user.username"
+        <router-link to="/sign-up" v-if="isUserObjEmpty"
           ><p class="ghost-nav-item">Sign up</p></router-link
         >
       </div>
@@ -109,9 +109,9 @@
 </template>
 
 <script>
-import store from "../store/index";
 import InputField from "../components/InputField";
 import socket from "../plugins/socketio-client";
+import { mapGetters, mapMutations } from 'vuex';
 
 export default {
   name: "Header",
@@ -122,10 +122,10 @@ export default {
     return {
       showNav: false,
       showCollapsible: false,
-      user: {},
     };
   },
   methods: {
+    ...mapMutations(['setUserState']),
     toogleNavs() {
       this.showNav = !this.showNav;
     },
@@ -133,17 +133,19 @@ export default {
       this.showCollapsible = !this.showCollapsible;
     },
     logout() {
-      store.commit('setUserState', {});
+      this.setUserState({});
       this.$router.push({name: 'Sign-in'});
       socket.disConnectSocket();
     }
   },
-  computed: {},
+  computed: {
+    ...mapGetters({user: 'AuthModule/getAuthUser'}),
+    isUserObjEmpty() {
+      return Object.keys(this.user).length == 0;
+    }
+  },
   created() {
     },
-  mounted() {
-    this.user = store.getters.getUserState;
-  },
 };
 </script>
 
