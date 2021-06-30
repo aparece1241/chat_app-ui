@@ -125,7 +125,7 @@ export default {
     };
   },
   methods: {
-    ...mapMutations(['setUserState']),
+    ...mapMutations({setUserState : 'AuthModule/setUserState'}),
     toogleNavs() {
       this.showNav = !this.showNav;
     },

@@ -92,6 +92,7 @@ export default {
       iconName: "success",
       title: "",
       buttons: { ok: true, cancel: false },
+      redirectTo: "",
     };
   },
   methods: {
@@ -100,7 +101,7 @@ export default {
     alertBtnClicked(data) {
       if (data.name == "ok") {
         this.alertCustomStyle = { display: "none" };
-        this.$router.push({ name: "Home" });
+        this.$router.push({ name: this.redirectTo });
       }
     },
 
@@ -128,7 +129,6 @@ export default {
         password: this.password,
       };
 
-      // Register the actions here
 
       this.loadingCustomStyle = { display: "grid" };
       if (!this.isValidForm) {
@@ -143,26 +143,19 @@ export default {
         return;
       }
 
-      // login api call here 
       const response = await this.login(data);
       this.loadingCustomStyle = { display: "none" };
       if (!response.error) {
         this.iconName = "success";
         this.title = "Login Successfully";
         this.alertMessage = response.message;
-        let data = {
-          username: response.data.user.username,
-          token: response.data.token,
-          profile_img: response.data.user.profile_img,
-          id: response.data.user._id
-        };
-
-        this.setUserState(data);
-        this.$router.push({name: 'Home'})
+        this.redirectTo = "Home";
+        
       } else {
         this.alertMessage = response.message;
         this.iconName = "danger";
         this.title = "Login Failed";
+        this.redirectTo = "Sign-in"
       }
       this.alertCustomStyle = { display: "grid" };
     },
