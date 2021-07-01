@@ -2,9 +2,14 @@ export default {
     namespaced: true,
     state: {
         users: [],
-        user: {}
+        user: {},
+        onlineUsers: [],
     },
-    getters: {},
+    getters: {
+        getOnlineUsers(state) {
+            return state.onlineUsers;
+        }
+    },
     mutations: {},
     actions: {}
 }

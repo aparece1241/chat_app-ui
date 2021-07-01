@@ -11,7 +11,11 @@
     </div>
     <div class="container" id="content">
       <div class="division" id="side-nav">
-        <div id="contact"></div>
+        <div id="contact">
+          <ActiveConvo />
+          <ActiveConvo />
+          <ActiveConvo />
+        </div>
       </div>
       <div class="division" id="msg-portal">
         <div id="msg-cont-wrapper" ref="msg-container">
@@ -22,6 +26,14 @@
           <Message
             v-bind:message="'yeah surely its to long!'"
             v-bind:messageType="'incoming-message'"
+          />
+          <Message
+            v-bind:message="'This is a very long long long long long long logn long long long long long long long long long long long long long long long long long long message'"
+            v-bind:messageType="'incoming-message'"
+          />
+          <Message
+            v-bind:message="'yeah surely its to long!'"
+            v-bind:messageType="'my-message'"
           />
         </div>
         <div id="text-msg-cont">
@@ -72,6 +84,7 @@ import Header from "../components/Header";
 import InputField from "../components/InputField";
 import socket from "../plugins/socketio-client";
 import Message from "../components/Message";
+import ActiveConvo from "../components/ActiveConvo";
 import Vue from "vue";
 
 export default {
@@ -80,6 +93,7 @@ export default {
     Header,
     InputField,
     Message,
+    ActiveConvo
   },
   data() {
     return {
@@ -156,7 +170,8 @@ export default {
 
 <style scoped>
 #contact {
-  margin-top: 59px;
+  margin-top: 58px;
+  padding-top: 4px;
   height: 100%;
   background-color: #f2edd7;
   border-radius: 4px;
