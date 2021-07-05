@@ -1,14 +1,29 @@
 <template>
   <div class="container">
     <p>
-      <span class="convo-title"><i class="fa fa-user"></i></span>Test
+      <span class="convo-title"><i class="fa fa-user"></i></span>
+      {{ checkUsername }}
     </p>
   </div>
 </template>
 
 <script>
+import { mapGetters } from 'vuex';
+
 export default {
   name: "ActiveConvo",
+  props: {
+    username: {type: String, default: "unknown"}
+  },
+  computed: {
+    ...mapGetters({
+      authUser: "AuthModule/getAuthUser"
+    }),
+    checkUsername() {
+      return (this.username === this.authUser.username)?"You" : this.username;
+    }
+  }
+
 };
 </script>
 

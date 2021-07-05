@@ -12,9 +12,9 @@
     <div class="container" id="content">
       <div class="division" id="side-nav">
         <div id="contact">
-          <ActiveConvo />
-          <ActiveConvo />
-          <ActiveConvo />
+          <ActiveConvo v-for="user in OnlineUsers" 
+            v-bind:key="user.userId" 
+            v-bind:username="user.user" />
         </div>
       </div>
       <div class="division" id="msg-portal">
@@ -85,6 +85,7 @@ import InputField from "../components/InputField";
 import socket from "../plugins/socketio-client";
 import Message from "../components/Message";
 import ActiveConvo from "../components/ActiveConvo";
+import { mapMutations, mapGetters } from "vuex";
 import Vue from "vue";
 
 export default {
@@ -102,16 +103,16 @@ export default {
     };
   },
   methods: {
+    ...mapMutations({
+      setOnlineUsers: "UserModule/setOnlineUsers"
+    }),
+
     toogleSideNav() {
       this.showSideBar = !this.showSideBar;
     },
 
     getInput(data) {
       this.msg = data.data;
-    },
-
-    getOnline(online) {
-      console.log(online);
     },
 
     appendMessage(message, type) {
@@ -158,11 +159,17 @@ export default {
       socket.initializedSocket();
     },
   },
+  computed: {
+    ...mapGetters({
+      OnlineUsers: "UserModule/getOnlineUsers"
+    })
+  },
+
   created() {},
   mounted() {
     this.connectSocket();
     socket.addEventListener({ type: "message", callback: this.recieveMsg });
-    socket.addEventListener({ type: "active-users", callback: this.getOnline });
+    socket.addEventListener({ type: "active-users", callback: this.setOnlineUsers });
     socket.addEventListener({ type: "connect_error", callback: this.showPopup })
   },
 };
