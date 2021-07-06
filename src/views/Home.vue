@@ -74,6 +74,9 @@
           ><i class="fa fa-arrow-left" aria-hidden="true"></i
         ></span>
       </div>
+      <ActiveConvo v-for="user in OnlineUsers" 
+            v-bind:key="user.userId" 
+            v-bind:username="user.user" />
     </div>
   </div>
 </template>
