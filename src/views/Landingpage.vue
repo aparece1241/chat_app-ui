@@ -101,7 +101,7 @@ export default {
   margin: 0px 8em;
 }
 
-@media screen and (min-width: 1444px) {
+/* @media screen and (min-width: 1444px) {
   #cont {
     width: 100%;
   }
@@ -111,7 +111,7 @@ export default {
     display: grid;
     justify-items: center;
   }
-}
+} */
 
 @media screen and (max-width: 900px) {
   #cont {

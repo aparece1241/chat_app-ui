@@ -6,15 +6,6 @@
         <span id="logo-text">mstalk</span>
       </div>
       <div id="search-cont">
-        <InputField
-          type="text"
-          placeholder="Search . . ."
-          name="search"
-          v-bind:className="['search-input']"
-        />
-        <button id="search-btn">
-          <span><i class="fa fa-search" aria-hidden="true"></i></span>
-        </button>
       </div>
       <div class="user-img" v-on:click="toggleCollapsible">
         <div class="status-img-wrapper">
@@ -109,15 +100,12 @@
 </template>
 
 <script>
-import InputField from "../components/InputField";
 import socket from "../plugins/socketio-client";
 import { mapGetters, mapMutations } from 'vuex';
 
 export default {
   name: "Header",
-  components: {
-    InputField,
-  },
+  components: {},
   data() {
     return {
       showNav: false,

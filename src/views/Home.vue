@@ -12,6 +12,8 @@
     <div class="container" id="content">
       <div class="division" id="side-nav">
         <div id="contact">
+          <ConvoUtils title="New Message" icon="fa fa-plus" />
+          <ConvoUtils title="Message Request" icon="fa fa-ellipsis-h" />
           <ActiveConvo v-for="user in OnlineUsers" 
             v-bind:key="user.userId" 
             v-bind:username="user.user" />
@@ -21,18 +23,6 @@
         <div id="msg-cont-wrapper" ref="msg-container">
           <Message
             v-bind:message="'This is a very long long long long long long logn long long long long long long long long long long long long long long long long long long message'"
-            v-bind:messageType="'my-message'"
-          />
-          <Message
-            v-bind:message="'yeah surely its to long!'"
-            v-bind:messageType="'incoming-message'"
-          />
-          <Message
-            v-bind:message="'This is a very long long long long long long logn long long long long long long long long long long long long long long long long long long message'"
-            v-bind:messageType="'incoming-message'"
-          />
-          <Message
-            v-bind:message="'yeah surely its to long!'"
             v-bind:messageType="'my-message'"
           />
         </div>
@@ -74,9 +64,18 @@
           ><i class="fa fa-arrow-left" aria-hidden="true"></i
         ></span>
       </div>
+      <ConvoUtils title="New Message" icon="fa fa-plus" />
+      <ConvoUtils title="Message Request" icon="fa fa-ellipsis-h" />
       <ActiveConvo v-for="user in OnlineUsers" 
             v-bind:key="user.userId" 
             v-bind:username="user.user" />
+    </div>
+
+    <!-- // modals // -->
+    <div class="modal">
+      <div class="modal-content">
+
+      </div>
     </div>
   </div>
 </template>
@@ -88,16 +87,18 @@ import InputField from "../components/InputField";
 import socket from "../plugins/socketio-client";
 import Message from "../components/Message";
 import ActiveConvo from "../components/ActiveConvo";
-import { mapMutations, mapGetters } from "vuex";
+import ConvoUtils from "../components/ConvoUtils";
+import { mapGetters } from "vuex";
 import Vue from "vue";
 
 export default {
   name: "Home",
   components: {
     Header,
-    InputField,
     Message,
-    ActiveConvo
+    ConvoUtils,
+    InputField,
+    ActiveConvo,
   },
   data() {
     return {
@@ -106,10 +107,6 @@ export default {
     };
   },
   methods: {
-    ...mapMutations({
-      setOnlineUsers: "UserModule/setOnlineUsers"
-    }),
-
     toogleSideNav() {
       this.showSideBar = !this.showSideBar;
     },
@@ -132,16 +129,6 @@ export default {
     },
 
     recieveMsg(data) {
-      // let Msg = Vue.extend(Message);
-      // let Msgs = new Msg({
-      //   propsData: { message: data, messageType: "incoming-message" },
-      // });
-      // Msgs.$mount();
-      // this.$refs["msg-container"].scrollTop = 100;
-      // this.$refs["msg-container"].appendChild(Msgs.$el);
-      // let childNum = this.$refs["msg-container"].children.length;
-      // let contHeight = this.$refs["msg-container"].offsetHeight;
-      // this.$refs["msg-container"].scrollTop = childNum * contHeight;
       this.appendMessage(data, "incoming-message");
     },
 
@@ -172,13 +159,38 @@ export default {
   mounted() {
     this.connectSocket();
     socket.addEventListener({ type: "message", callback: this.recieveMsg });
-    socket.addEventListener({ type: "active-users", callback: this.setOnlineUsers });
     socket.addEventListener({ type: "connect_error", callback: this.showPopup })
   },
 };
 </script>
 
 <style scoped>
+.modal-content {
+  position: absolute;
+  /* border: solid; */
+  display: block;
+  left: 50%;
+  right: 50%;
+  width: 500px;
+  transform: translate(-50%, -50%);
+  top: 50%;
+  z-index: 5;
+  height: 500px;
+  box-shadow: 0px 0px 3px #e6e3e3;
+  border-radius: 15px;
+  background-color: white;
+}
+
+.modal {
+  /* display: none; */
+  z-index: 5;
+  width: 100vw;
+  height: 100vh;
+  position: relative;
+  top: calc(-70px - 100vh);
+  background-color: rgba(0,0,0,0.5);
+}
+
 #contact {
   margin-top: 58px;
   padding-top: 4px;
@@ -263,7 +275,7 @@ export default {
 
 #text-msg-cont {
   position: fixed;
-  bottom: 0em;
+  bottom: 2px;
   height: 95px;
   width: 81.4%;
   display: grid;
@@ -306,6 +318,7 @@ export default {
   z-index: 1;
   height: 100%;
   background-color: #f2edd7;
+  left: 0;
   animation: slide 0.5s 1;
 }
 
@@ -347,16 +360,16 @@ export default {
 
 /* Keyframes */
 @keyframes slide {
-  from {
+  0% {
     left: -123px;
   }
-  to {
-    left: 0px;
+  100% {
+    left: 0;
   }
 }
 
 /* Media queries */
-@media screen and (min-width: 1444px) {
+/* @media screen and (min-width: 1444px) {
   .home {
     justify-items: center;
     align-items: center;
@@ -373,7 +386,7 @@ export default {
   #text-msg-cont {
     width: 1173px;
   }
-}
+} */
 
 @media screen and (min-width: 900px) {
   #ghost-side-nav {

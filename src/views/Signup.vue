@@ -166,8 +166,8 @@ export default {
         }
         return;
       }
-
-      let response = await apiHelper("/user", "POST", data);
+      
+      let response = await apiHelper.apiRequest("/user", "POST", data);
       this.loadingCustomStyle = { display: "none" };
       if (!response.error) {
         this.iconName = "success";

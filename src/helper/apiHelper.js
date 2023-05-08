@@ -1,4 +1,5 @@
-let baseUrl = 'https://mstalk.herokuapp.com';
+// let baseUrl = 'https://mstalk.herokuapp.com';
+let baseUrl = 'http://localhost:4000';
 const apiRequest = async (url, method='GET', props=null) => {
     
     let options = {
@@ -10,8 +11,7 @@ const apiRequest = async (url, method='GET', props=null) => {
         options['headers'] = {'Content-Type': 'application/json'}
     }
 
-    
-    let fetchedData = await fetch(`${baseUrl}${url}`, options)
+    let fetchedData = await fetch(`${baseUrl}${url}`, options);
     let resObj = await fetchedData.json();
 
     return resObj;
