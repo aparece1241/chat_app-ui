@@ -13,6 +13,9 @@ export default {
     mutations: {
         setUserState(state, user) {
             state.user = user;
+        },
+        resetState(state) {
+            state.user = {};
         }
     },
     actions: {

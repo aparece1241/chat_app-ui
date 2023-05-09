@@ -113,7 +113,10 @@ export default {
     };
   },
   methods: {
-    ...mapMutations({setUserState : 'AuthModule/setUserState'}),
+    ...mapMutations({
+      resetAuthState : 'AuthModule/resetState',
+      resetUserState : 'UserModule/resetState'
+    }),
     toogleNavs() {
       this.showNav = !this.showNav;
     },
@@ -121,7 +124,8 @@ export default {
       this.showCollapsible = !this.showCollapsible;
     },
     logout() {
-      this.setUserState({});
+      this.resetAuthState();
+      this.resetUserState();
       this.$router.push({name: 'Sign-in'});
       socket.disConnectSocket();
     }

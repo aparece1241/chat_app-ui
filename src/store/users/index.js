@@ -4,6 +4,7 @@ export default {
     namespaced: true,
     
     state: {
+        user: {},
         users: [],
         onlineUsers: [],
     },
@@ -14,6 +15,9 @@ export default {
         },
         getAllUsers(state) {
             return state.users;
+        },
+        getUser(state) {
+            return state.user;
         }
     },
 
@@ -23,6 +27,14 @@ export default {
         },
         setUsers(state, users) {
             state.users = users;
+        },
+        setUser(state, user) {
+            state.user = user;
+        },
+        resetState(state) {
+            state.user = {};
+            state.users = [];
+            state.onlineUsers = [];
         }
     },
 
@@ -30,6 +42,10 @@ export default {
         async requestAllUsers(context) {
             const response = await apiHelper.apiRequest('/user/users');
             context.commit('setUsers', response.data);
+        },
+        async requestUser(context, user_id) {
+            const response = await apiHelper.apiRequest(`/user/${user_id}`);
+            context.commit('setUser', response.data);
         }
     }
 }

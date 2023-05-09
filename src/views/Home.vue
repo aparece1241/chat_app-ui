@@ -14,9 +14,11 @@
         <div id="contact">
           <ConvoUtils title="New Message" icon="fa fa-plus" v-on:click.native="showModal"/>
           <ConvoUtils title="Message Request" icon="fa fa-ellipsis-h" />
-          <ActiveConvo v-for="user in contact_list"
+          <ActiveConvo v-for="(user, index) in contact_list"
             v-bind:key="user.userId" 
-            v-bind:username="user.username" />
+            v-bind:username="user.username"
+            v-on:click.native="switchConvo(index)"
+          />
         </div>
       </div>
       <div class="division no-contact-cont" v-show="!conversations.length">
@@ -30,10 +32,18 @@
       <div class="division" v-show="conversations.length" id="msg-portal">
         <div id="msg-cont-wrapper" ref="msg-container">
           <Message
-            v-show="!selected_conversation.messages.length"
+            v-show="!messages.length"
             v-bind:message="'Say Hello !!!'"
             v-bind:messageType="'my-message'"
           />
+
+          <Message
+            v-for="(message, index) in messages"
+            v-bind:key="index"
+            v-bind:message="message.message"
+            v-bind:messageType="message.author === user._id ? 'my-message' : 'incoming-message'"
+          />
+
         </div>
         <div id="text-msg-cont">
           <InputField
@@ -73,11 +83,13 @@
           ><i class="fa fa-arrow-left" aria-hidden="true"></i
         ></span>
       </div>
-      <ConvoUtils title="New Message" icon="fa fa-plus" />
+      <ConvoUtils title="New Message" icon="fa fa-plus" v-on:click.native="showModal" />
       <ConvoUtils title="Message Request" icon="fa fa-ellipsis-h" />
-      <ActiveConvo v-for="user in contact_list" 
-            v-bind:key="user.userId"
-            v-bind:username="user.username" />
+      <ActiveConvo v-for="(user, index) in contact_list"
+        v-bind:key="user.userId"
+        v-bind:username="user.username"
+        v-on:click.native="switchConvo(index)"
+      />
     </div>
 
     <!-- // modals // -->
@@ -108,7 +120,6 @@ import Message from "../components/Message";
 import ActiveConvo from "../components/ActiveConvo";
 import ConvoUtils from "../components/ConvoUtils";
 import { mapGetters, mapActions } from "vuex";
-import Vue from "vue";
 import apiHelper from '../helper/apiHelper';
 
 export default {
@@ -127,15 +138,17 @@ export default {
       showModal1: false,
       conversations: [],
       contact_list: [],
-      selected_conversation: {
-        messages: []
-      },
+      selected_conversation: {},
       conversation_name: "",
+      messages: [],
+      conversation_index: 0,
+      to_save_convo: {}
     };
   },
   methods: {
     ...mapActions({
-      requestAllUsers: "UserModule/requestAllUsers"
+      requestAllUsers: "UserModule/requestAllUsers",
+      requestUser: "UserModule/requestUser"
     }),
 
     toogleSideNav() {
@@ -146,27 +159,24 @@ export default {
       this.msg = data.data;
     },
 
-    appendMessage(message, type) {
-      let Msg = Vue.extend(Message);
-      let Msgs = new Msg({
-        propsData: { message: message, messageType: type },
-      });
-
-      Msgs.$mount();
+    scrollUp() {
       this.$refs["msg-container"].scrollTop = 100;
-      this.$refs["msg-container"].appendChild(Msgs.$el);
       let childNum = this.$refs["msg-container"].children.length;
       let contHeight = this.$refs["msg-container"].offsetHeight;
       this.$refs["msg-container"].scrollTop = childNum * contHeight;
     },
 
-    recieveMsg(data) {
-      this.appendMessage(data, "incoming-message");
+    async recieveMsg() {
+      await setTimeout(async () => {
+        await this.requestUser(this.authUser._id);
+        this.prepareConversation();
+        this.prepareMessages();
+      }, 200);
     },
 
     async sendMsg() {
       socket.addEventEmitter({ type: "message", data: this.msg });
-      this.appendMessage(this.msg, "my-message");
+      // this.appendMessage(this.msg, "my-message");
       
       // Clear the message
       this.$refs["text-message"].data = "";
@@ -174,7 +184,7 @@ export default {
       // save message
       let d = {
         message: this.msg,
-        author: this.authUser._id
+        author: this.user._id
       };
 
       let response = await apiHelper.apiRequest('/message', "POST", d);
@@ -190,6 +200,7 @@ export default {
           messages: [response.data._id, ...this.selected_conversation.messages.map(message => message._id)]
         }
         this.updateConversation(d);
+        this.to_save_convo = {};
       }
     },
 
@@ -210,44 +221,81 @@ export default {
       this.showModal1 = true;
     },
 
+    switchConvo(index) {
+      this.conversation_index = index;
+      this.prepareConversation();
+      this.prepareMessages();
+      this.toogleSideNav();
+    },
+
     startConvo(user) {
-      let d = {
-        conversation_name: `${this.authUser.username}, ${user.username}`,
+      this.to_save_convo = {
+        conversation_name: `${this.user.username}, ${user.username}`,
         is_accepted_both: false,
-        members: [this.authUser._id, user._id],
+        members: [this.user._id, user._id],
         messages: [],
       }
 
-      this.selected_conversation = d;
+      this.selected_conversation = this.to_save_convo;
       this.contact_list.push(user);
-      this.conversations.push(d);
+      this.conversations.push(this.to_save_convo);
+      this.toogleSideNav();
+      this.conversation_index = this.conversations.length - 1;
       this.showModal1 = false;
-    },
 
+      this.prepareConversation();
+      this.prepareMessages();
+    },
+    
     prepareContactList() {
       this.conversations.forEach(convo => {
         convo.members.forEach(member => {
-          if (member._id != this.authUser._id) {
+          if (member._id != this.user._id) {
             this.contact_list.push(member);
           }
         });
       });
     },
 
+    prepareMessages() {
+      this.messages = [...this.selected_conversation.messages];
+      this.messages = this.messages.sort((a, b) => new Date(a.created_at) - new Date(b.created_at));
+
+      setTimeout(() => {
+        this.scrollUp();
+      }, 200);
+    },
+
+    prepareConversation() {
+      this.conversations = this.user.conversations;
+      
+      if (Object.keys(this.to_save_convo).length) {
+        this.conversations.push(this.to_save_convo);
+      }
+
+      this.selected_conversation = this.conversations[this.conversation_index];
+      this.conversation_name = this.selected_conversation.conversation_name;
+    },
+
     async saveConversation() {
-      const response = await apiHelper.apiRequest('/conversation', "POST", this.selected_conversation);
-      console.log(response);
+      await apiHelper.apiRequest('/conversation', "POST", this.selected_conversation);
+      await this.requestUser(this.authUser._id);
+      this.prepareConversation();
+      this.prepareMessages();
     },
 
     async updateConversation(data) {
-      const response = await apiHelper.apiRequest(`/conversation/${this.selected_conversation?._id}`, "PATCH", data);
-      this.selected_conversation = response.data;
+      await apiHelper.apiRequest(`/conversation/${this.selected_conversation?._id}`, "PATCH", data);
+      await this.requestUser(this.authUser._id);
+      this.prepareConversation();
+      this.prepareMessages();
     }
   },
 
   computed: {
     ...mapGetters({
       OnlineUsers: "UserModule/getOnlineUsers",
+      user: "UserModule/getUser",
       users: "UserModule/getAllUsers",
       authUser: "AuthModule/getAuthUser",
     })
@@ -257,15 +305,25 @@ export default {
   mounted() {
     this.requestAllUsers();
     this.connectSocket();
+
+    // for socket events
     socket.addEventListener({ type: "message", callback: this.recieveMsg });
-    socket.addEventListener({ type: "connect_error", callback: this.showPopup });
+    // socket.addEventListener({ type: "connect_error", callback: this.showPopup });
+
+    // request user every mounted
+    if (this.authUser._id) {
+      this.requestUser(this.authUser._id);
+    }
 
     // initialized conversation
-    this.conversations = this.authUser.conversations;
-    this.selected_conversation = this.conversations[0];
-    this.conversation_name = this.selected_conversation.conversation_name;
-    // prepare contact list
-    this.prepareContactList();
+    if (this.user.conversations.length) {
+      // prepare conversation
+      this.prepareConversation();
+      // prepare contact list
+      this.prepareContactList();
+      // prepare messages
+      this.prepareMessages();
+    }
   },
 };
 </script>
