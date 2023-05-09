@@ -6,23 +6,32 @@
         <span id="expand-bar" v-on:click="toogleSideNav"
           ><i class="fa fa-indent" aria-hidden="true"></i
         ></span>
-        <span id="convo-title">Conversation Name</span>
+        <span id="convo-title">{{ conversation_name ? conversation_name : "New Conversation" }}</span>
       </div>
     </div>
     <div class="container" id="content">
       <div class="division" id="side-nav">
         <div id="contact">
-          <ConvoUtils title="New Message" icon="fa fa-plus" />
+          <ConvoUtils title="New Message" icon="fa fa-plus" v-on:click.native="showModal"/>
           <ConvoUtils title="Message Request" icon="fa fa-ellipsis-h" />
-          <ActiveConvo v-for="user in OnlineUsers" 
+          <ActiveConvo v-for="user in contact_list"
             v-bind:key="user.userId" 
-            v-bind:username="user.user" />
+            v-bind:username="user.username" />
         </div>
       </div>
-      <div class="division" id="msg-portal">
+      <div class="division no-contact-cont" v-show="!conversations.length">
+        <div class="no-contact-view">
+          <h3>Start your day with a chat!!!</h3>
+          <h5>Find your first chat mate...</h5>
+          <h6>Click new chat or click here to start.</h6>
+          <button class="new-chat-btn" v-on:click="showModal">New Chat</button>
+        </div>
+      </div>
+      <div class="division" v-show="conversations.length" id="msg-portal">
         <div id="msg-cont-wrapper" ref="msg-container">
           <Message
-            v-bind:message="'This is a very long long long long long long logn long long long long long long long long long long long long long long long long long long message'"
+            v-show="!selected_conversation.messages.length"
+            v-bind:message="'Say Hello !!!'"
             v-bind:messageType="'my-message'"
           />
         </div>
@@ -66,15 +75,25 @@
       </div>
       <ConvoUtils title="New Message" icon="fa fa-plus" />
       <ConvoUtils title="Message Request" icon="fa fa-ellipsis-h" />
-      <ActiveConvo v-for="user in OnlineUsers" 
-            v-bind:key="user.userId" 
-            v-bind:username="user.user" />
+      <ActiveConvo v-for="user in contact_list" 
+            v-bind:key="user.userId"
+            v-bind:username="user.username" />
     </div>
 
     <!-- // modals // -->
-    <div class="modal">
+    <div class="modal" v-show="showModal1">
       <div class="modal-content">
-
+        <div class="search-user-cont">
+          <span class="close" v-on:click="closeModal">&times;</span>
+          <InputField
+            name="SearchUser"
+            class="search-user"
+            :placeholder="'Direct Message'"
+          />
+        </div>
+        <div class="user-list">
+          <ActiveConvo v-for="(user, index) in users" v-bind:key="index" v-bind:username="user.username" icon="fa fa-comments" v-on:click.native="startConvo(user)" />
+        </div>
       </div>
     </div>
   </div>
@@ -88,8 +107,9 @@ import socket from "../plugins/socketio-client";
 import Message from "../components/Message";
 import ActiveConvo from "../components/ActiveConvo";
 import ConvoUtils from "../components/ConvoUtils";
-import { mapGetters } from "vuex";
+import { mapGetters, mapActions } from "vuex";
 import Vue from "vue";
+import apiHelper from '../helper/apiHelper';
 
 export default {
   name: "Home",
@@ -104,9 +124,20 @@ export default {
     return {
       showSideBar: false,
       msg: "",
+      showModal1: false,
+      conversations: [],
+      contact_list: [],
+      selected_conversation: {
+        messages: []
+      },
+      conversation_name: "",
     };
   },
   methods: {
+    ...mapActions({
+      requestAllUsers: "UserModule/requestAllUsers"
+    }),
+
     toogleSideNav() {
       this.showSideBar = !this.showSideBar;
     },
@@ -120,6 +151,7 @@ export default {
       let Msgs = new Msg({
         propsData: { message: message, messageType: type },
       });
+
       Msgs.$mount();
       this.$refs["msg-container"].scrollTop = 100;
       this.$refs["msg-container"].appendChild(Msgs.$el);
@@ -132,12 +164,33 @@ export default {
       this.appendMessage(data, "incoming-message");
     },
 
-    sendMsg() {
+    async sendMsg() {
       socket.addEventEmitter({ type: "message", data: this.msg });
       this.appendMessage(this.msg, "my-message");
+      
       // Clear the message
       this.$refs["text-message"].data = "";
+      
+      // save message
+      let d = {
+        message: this.msg,
+        author: this.authUser._id
+      };
+
+      let response = await apiHelper.apiRequest('/message', "POST", d);
       this.msg = "";
+      
+      
+      // save conversation
+      if (!this.selected_conversation._id) {
+        this.selected_conversation.messages.push(response.data._id);
+        await this.saveConversation();
+      } else {
+        let d = {
+          messages: [response.data._id, ...this.selected_conversation.messages.map(message => message._id)]
+        }
+        this.updateConversation(d);
+      }
     },
 
     // Show the pop-up error
@@ -148,23 +201,125 @@ export default {
     connectSocket() {
       socket.initializedSocket();
     },
+
+    closeModal() {
+      this.showModal1 = false;
+    },
+
+    showModal() {
+      this.showModal1 = true;
+    },
+
+    startConvo(user) {
+      let d = {
+        conversation_name: `${this.authUser.username}, ${user.username}`,
+        is_accepted_both: false,
+        members: [this.authUser._id, user._id],
+        messages: [],
+      }
+
+      this.selected_conversation = d;
+      this.contact_list.push(user);
+      this.conversations.push(d);
+      this.showModal1 = false;
+    },
+
+    prepareContactList() {
+      this.conversations.forEach(convo => {
+        convo.members.forEach(member => {
+          if (member._id != this.authUser._id) {
+            this.contact_list.push(member);
+          }
+        });
+      });
+    },
+
+    async saveConversation() {
+      const response = await apiHelper.apiRequest('/conversation', "POST", this.selected_conversation);
+      console.log(response);
+    },
+
+    async updateConversation(data) {
+      const response = await apiHelper.apiRequest(`/conversation/${this.selected_conversation?._id}`, "PATCH", data);
+      this.selected_conversation = response.data;
+    }
   },
+
   computed: {
     ...mapGetters({
-      OnlineUsers: "UserModule/getOnlineUsers"
+      OnlineUsers: "UserModule/getOnlineUsers",
+      users: "UserModule/getAllUsers",
+      authUser: "AuthModule/getAuthUser",
     })
   },
 
   created() {},
   mounted() {
+    this.requestAllUsers();
     this.connectSocket();
     socket.addEventListener({ type: "message", callback: this.recieveMsg });
-    socket.addEventListener({ type: "connect_error", callback: this.showPopup })
+    socket.addEventListener({ type: "connect_error", callback: this.showPopup });
+
+    // initialized conversation
+    this.conversations = this.authUser.conversations;
+    this.selected_conversation = this.conversations[0];
+    this.conversation_name = this.selected_conversation.conversation_name;
+    // prepare contact list
+    this.prepareContactList();
   },
 };
 </script>
 
 <style scoped>
+.new-chat-btn {
+  border: none;
+  background: floralwhite;
+  padding: 10px 20px;
+  border-radius: 5px;
+  box-shadow: 0px 0px 3px #9f9595;
+  cursor: pointer;
+}
+.no-contact-cont {
+  position: relative;
+  margin-top: 58px;
+  display: grid;
+  justify-items: center;
+  align-items: center;
+}
+.no-contact-view {
+  position: absolute;
+  text-align: center;
+  box-shadow: 0px 0px 20px #e6e3e3;
+  padding: 10px;
+  border-radius: 10px;
+}
+.close {
+  position: absolute;
+  right: 0;
+  padding: 7px 11px;
+  border-radius: 19px;
+  cursor: pointer;
+  background: #9dabab;
+}
+.user-list {
+  margin: 0px 35px;
+  max-height: 380px;
+  height: 100%;
+  padding: 5px;
+  margin-top: -70px;
+  border-radius: 15px;
+  box-shadow: 0px 0px 8px gray;
+}
+.search-user-cont {
+  justify-content: center;
+  grid-template-rows: 0.2fr 1fr;
+  display: grid !important;
+}
+.search-user {
+  box-shadow: 0px 0px 8px gray;
+  margin: 18px 0px;
+  border-radius: 10px;
+}
 .modal-content {
   position: absolute;
   /* border: solid; */
@@ -355,6 +510,10 @@ export default {
 }
 
 #msg-cont-wrapper::-webkit-scrollbar {
+  display: none;
+}
+
+.d-none {
   display: none;
 }
 

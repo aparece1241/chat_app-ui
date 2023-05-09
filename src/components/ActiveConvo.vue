@@ -1,7 +1,7 @@
 <template>
   <div class="container">
     <p>
-      <span class="convo-title"><i class="fa fa-user"></i></span>
+      <span class="convo-title"><i :class="icon"></i></span>
       {{ checkUsername }}
     </p>
   </div>
@@ -13,6 +13,7 @@ import { mapGetters } from 'vuex';
 export default {
   name: "ActiveConvo",
   props: {
+    icon: {type: String, default: 'fa fa-user'},
     username: {type: String, default: "unknown"}
   },
   computed: {

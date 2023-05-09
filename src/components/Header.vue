@@ -307,7 +307,7 @@ a {
 .nav-item {
   float: right;
   cursor: pointer;
-  padding: 24px 25px;
+  padding: 26px 25px;
   color: #f2edd7;
 }
 

@@ -19,15 +19,7 @@ export default {
         async login(context, data) {
             let response = await ApiHelper.apiRequest("/user/login", "POST", data);
             if (!response.error) {
-                let d = {
-                    username: response.data.user.username,
-                    token: response.data.token,
-                    profile_img: response.data.user.profile_img,
-                    id: response.data.user._id
-                  };
-          
-                  context.commit('setUserState', d);
-                  
+                  context.commit('setUserState', response.data.user);
             }
             response = {
                   error: response.error,
