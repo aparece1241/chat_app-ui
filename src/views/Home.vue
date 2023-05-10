@@ -12,8 +12,8 @@
     <div class="container" id="content">
       <div class="division" id="side-nav">
         <div id="contact">
-          <ConvoUtils title="New Message" icon="fa fa-plus" v-on:click.native="showModal"/>
-          <ConvoUtils title="Message Request" icon="fa fa-ellipsis-h" />
+          <ConvoUtils title="New Message" icon="fa fa-plus" v-on:click.native="showModal('showModal1')"/>
+          <ConvoUtils title="Message Request" icon="fa fa-ellipsis-h" v-on:click.native="showModal('showModal2')"/>
           <ActiveConvo v-for="(user, index) in contact_list"
             v-bind:key="user.userId" 
             v-bind:username="user.username"
@@ -21,15 +21,15 @@
           />
         </div>
       </div>
-      <div class="division no-contact-cont" v-show="!conversations.length">
+      <div class="division no-contact-cont" v-show="!contact_list.length">
         <div class="no-contact-view">
           <h3>Start your day with a chat!!!</h3>
           <h5>Find your first chat mate...</h5>
           <h6>Click new chat or click here to start.</h6>
-          <button class="new-chat-btn" v-on:click="showModal">New Chat</button>
+          <button class="new-chat-btn" v-on:click="showModal('showModal1')">New Chat</button>
         </div>
       </div>
-      <div class="division" v-show="conversations.length" id="msg-portal">
+      <div class="division" v-show="contact_list.length" id="msg-portal">
         <div id="msg-cont-wrapper" ref="msg-container">
           <Message
             v-show="!messages.length"
@@ -83,8 +83,8 @@
           ><i class="fa fa-arrow-left" aria-hidden="true"></i
         ></span>
       </div>
-      <ConvoUtils title="New Message" icon="fa fa-plus" v-on:click.native="showModal" />
-      <ConvoUtils title="Message Request" icon="fa fa-ellipsis-h" />
+      <ConvoUtils title="New Message" icon="fa fa-plus" v-on:click.native="showModal('showModal1')" />
+      <ConvoUtils title="Message Request" :badge="message_request.length" icon="fa fa-ellipsis-h" v-on:click.native="showModal('showModal2')"/>
       <ActiveConvo v-for="(user, index) in contact_list"
         v-bind:key="user.userId"
         v-bind:username="user.username"
@@ -93,10 +93,10 @@
     </div>
 
     <!-- // modals // -->
-    <div class="modal" v-show="showModal1">
+    <div class="modal" v-show="modals.showModal1">
       <div class="modal-content">
         <div class="search-user-cont">
-          <span class="close" v-on:click="closeModal">&times;</span>
+          <span class="close" v-on:click="closeModal('showModal1')">&times;</span>
           <InputField
             name="SearchUser"
             class="search-user"
@@ -104,7 +104,34 @@
           />
         </div>
         <div class="user-list">
-          <ActiveConvo v-for="(user, index) in users" v-bind:key="index" v-bind:username="user.username" icon="fa fa-comments" v-on:click.native="startConvo(user)" />
+          <ActiveConvo v-for="(user, index) in users"
+            v-show="user._id != authUser._id"
+            v-bind:key="index"
+            v-bind:username="user.username"
+            icon="fa fa-comments"
+            v-on:click.native="startConvo(user)"
+          />
+        </div>
+      </div>
+    </div>
+
+    <div class="modal" v-show="modals.showModal2">
+      <div class="modal-content">
+        <div class="search-user-cont">
+          <span class="close" v-on:click="closeModal('showModal2')">&times;</span>
+          <InputField
+            name="SearchUser"
+            class="search-user"
+            :placeholder="'Message requests'"
+          />
+        </div>
+        <div class="user-list">
+          <ActiveConvo v-for="(user, index) in message_request"
+            v-show="user._id != authUser._id"
+            v-bind:key="index"
+            v-bind:username="user.username"
+            icon="fa fa-comments"
+          />
         </div>
       </div>
     </div>
@@ -135,9 +162,13 @@ export default {
     return {
       showSideBar: false,
       msg: "",
-      showModal1: false,
+      modals: {
+        showModal1: false,
+        showModal2: false
+      },
       conversations: [],
       contact_list: [],
+      message_request: [],
       selected_conversation: {},
       conversation_name: "",
       messages: [],
@@ -170,6 +201,7 @@ export default {
       await setTimeout(async () => {
         await this.requestUser(this.authUser._id);
         this.prepareConversation();
+        this.prepareContactList();
         this.prepareMessages();
       }, 200);
     },
@@ -190,18 +222,22 @@ export default {
       let response = await apiHelper.apiRequest('/message', "POST", d);
       this.msg = "";
       
-      
       // save conversation
       if (!this.selected_conversation._id) {
+        // add new message to selected conversation
         this.selected_conversation.messages.push(response.data._id);
+        // save first conversation
         await this.saveConversation();
+        // emit notify message request
+        let socket_id = this.getRecipient(this.selected_conversation.members).socket_id;
+        socket.addEventEmitter({ type: "notification", data: socket_id });
       } else {
         let d = {
           messages: [response.data._id, ...this.selected_conversation.messages.map(message => message._id)]
         }
         this.updateConversation(d);
-        this.to_save_convo = {};
       }
+      this.to_save_convo = {};
     },
 
     // Show the pop-up error
@@ -213,17 +249,19 @@ export default {
       socket.initializedSocket();
     },
 
-    closeModal() {
-      this.showModal1 = false;
+    closeModal(modal) {
+      this.modals[modal] = false;
     },
 
-    showModal() {
-      this.showModal1 = true;
+    showModal(modal) {
+      this.modals[modal] = true;
     },
 
     switchConvo(index) {
+      console.log(index);
       this.conversation_index = index;
       this.prepareConversation();
+      this.prepareContactList();
       this.prepareMessages();
       this.toogleSideNav();
     },
@@ -232,26 +270,34 @@ export default {
       this.to_save_convo = {
         conversation_name: `${this.user.username}, ${user.username}`,
         is_accepted_both: false,
-        members: [this.user._id, user._id],
+        members: [this.user, user],
+        started_by: this.user._id,
         messages: [],
       }
 
       this.selected_conversation = this.to_save_convo;
       this.contact_list.push(user);
       this.conversations.push(this.to_save_convo);
-      this.toogleSideNav();
       this.conversation_index = this.conversations.length - 1;
-      this.showModal1 = false;
+      this.modals.showModal1 = false;
+      this.showSideBar = false;
 
       this.prepareConversation();
+      this.prepareContactList();
       this.prepareMessages();
     },
     
     prepareContactList() {
+      this.contact_list = [];
+      this.message_request = [];
       this.conversations.forEach(convo => {
         convo.members.forEach(member => {
           if (member._id != this.user._id) {
-            this.contact_list.push(member);
+            if (convo.is_accepted_both || convo.started_by == this.user._id) {
+              this.contact_list.push(member);
+            } else {
+              this.message_request.push(member);
+            }
           }
         });
       });
@@ -268,7 +314,6 @@ export default {
 
     prepareConversation() {
       this.conversations = this.user.conversations;
-      
       if (Object.keys(this.to_save_convo).length) {
         this.conversations.push(this.to_save_convo);
       }
@@ -278,9 +323,12 @@ export default {
     },
 
     async saveConversation() {
-      await apiHelper.apiRequest('/conversation', "POST", this.selected_conversation);
+      let data = {...this.selected_conversation};
+      data.members = data.members.map(member => member._id);
+      await apiHelper.apiRequest('/conversation', "POST", data);
       await this.requestUser(this.authUser._id);
       this.prepareConversation();
+      this.prepareContactList();
       this.prepareMessages();
     },
 
@@ -288,7 +336,26 @@ export default {
       await apiHelper.apiRequest(`/conversation/${this.selected_conversation?._id}`, "PATCH", data);
       await this.requestUser(this.authUser._id);
       this.prepareConversation();
+      this.prepareContactList();
       this.prepareMessages();
+    },
+
+    notify() {
+      this.refreshSocketDatas();
+      console.log('message request!');
+    },
+
+    refreshSocketDatas() {
+      this.requestAllUsers();
+      this.requestUser(this.authUser._id);
+
+      this.prepareConversation();
+      this.prepareContactList();
+      this.prepareMessages();
+    },
+
+    getRecipient(members) {
+      return members.find(member => member._id !== this.user._id);
     }
   },
 
@@ -302,17 +369,19 @@ export default {
   },
 
   created() {},
-  mounted() {
+  async mounted() {
     this.requestAllUsers();
     this.connectSocket();
 
     // for socket events
     socket.addEventListener({ type: "message", callback: this.recieveMsg });
-    // socket.addEventListener({ type: "connect_error", callback: this.showPopup });
+    socket.addEventListener({ type: "notification", callback: this.notify });
+    socket.addEventListener({ type: "a-user-connect", callback: this.refreshSocketDatas });
+    socket.addEventListener({ type: "connect_error", callback: this.showPopup });
 
     // request user every mounted
     if (this.authUser._id) {
-      this.requestUser(this.authUser._id);
+      await this.requestUser(this.authUser._id);
     }
 
     // initialized conversation

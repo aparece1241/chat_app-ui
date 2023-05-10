@@ -4,6 +4,7 @@
         <span class="convo-title"><i :class="icon"></i></span>
         {{ title }}
       </p>
+      <span class="badge" v-if="badge">{{ badge }}</span>
     </div>
   </template>
   <script>
@@ -11,7 +12,8 @@
         name: "ConvoUtils",
         props: {
             title: {type: String, default: "unknown"},
-            icon: {type: String, default: "fa fa-plus"}
+            icon: {type: String, default: "fa fa-plus"},
+            badge: {type: Number, default: 0}
         },
         computed: {}
     };
@@ -25,6 +27,7 @@
     box-shadow: 0px 0px 74px #dedad5;
     border-radius: 7px;
     cursor: pointer;
+    position: relative;
   }
   
   .container:hover {
@@ -39,5 +42,19 @@
     border-radius: 25px;
     color: white;
     margin-right: 10px;
+  }
+
+  .badge {
+    position: absolute;
+    right: 0;
+    margin-right: 15px;
+    display: block;
+    top: 50%;
+    transform: translateY(-50%);
+    background: red;
+    font-weight: bold;
+    color: white;
+    padding: 5px 7px;
+    border-radius: 5px;
   }
   </style>
