@@ -259,7 +259,7 @@ export default {
     },
 
     // Show the pop-up error
-    showPopup(data) {
+    showPopup(/* data */) {
       // console.log(data);
     },
 
