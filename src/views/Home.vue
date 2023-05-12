@@ -93,7 +93,7 @@
     </div>
 
     <!-- // modals // -->
-    <div class="modal" v-show="modals.showModal1">
+    <div class="modal" v-show="modals.showModal1" v-on:click.stop="closeModal('showModal1')">
       <div class="modal-content">
         <div class="search-user-cont">
           <span class="close" v-on:click="closeModal('showModal1')">&times;</span>
@@ -109,13 +109,13 @@
             v-bind:key="index"
             v-bind:username="user.username"
             icon="fa fa-comments"
-            v-on:click.native="startConvo(user)"
+            v-on:click.native.stop="startConvo(user)"
           />
         </div>
       </div>
     </div>
 
-    <div class="modal" v-show="modals.showModal2">
+    <div class="modal" v-show="modals.showModal2" v-on:click.stop="closeModal('showModal2')">
       <div class="modal-content">
         <div class="search-user-cont">
           <span class="close" v-on:click="closeModal('showModal2')">&times;</span>
@@ -130,8 +130,24 @@
             v-show="user._id != authUser._id"
             v-bind:key="index"
             v-bind:username="user.username"
+            v-on:click.native.stop="toAcceptMessageReqModal(user, 'showModal3')"
             icon="fa fa-comments"
           />
+        </div>
+      </div>
+    </div>
+
+    <div class="modal" v-show="modals.showModal3" v-on:click.stop="closeModal('showModal3')">
+      <div class="modal-content">
+        <div class="search-user-cont">
+          <span class="close" v-on:click="closeModal('showModal3')">&times;</span>
+        </div>
+        <div class="confirmation">
+          <h3>Accept this message request?</h3>
+          <div class="btn-cont">
+            <button class="accept-btn" v-on:click.stop="acceptMessageReq()">Accept</button>
+            <button class="cancel-btn" v-on:click.stop="closeMessageReq()">Cancel</button>
+          </div>
         </div>
       </div>
     </div>
@@ -164,11 +180,13 @@ export default {
       msg: "",
       modals: {
         showModal1: false,
-        showModal2: false
+        showModal2: false,
+        showModal3: false
       },
       conversations: [],
       contact_list: [],
       message_request: [],
+      message_rec_to_acc: {},
       selected_conversation: {},
       conversation_name: "",
       messages: [],
@@ -200,8 +218,8 @@ export default {
     async recieveMsg() {
       await setTimeout(async () => {
         await this.requestUser(this.authUser._id);
-        this.prepareConversation();
         this.prepareContactList();
+        this.prepareConversation();
         this.prepareMessages();
       }, 200);
     },
@@ -242,7 +260,7 @@ export default {
 
     // Show the pop-up error
     showPopup(data) {
-      console.log(data);
+      // console.log(data);
     },
 
     connectSocket() {
@@ -258,36 +276,46 @@ export default {
     },
 
     switchConvo(index) {
-      console.log(index);
       this.conversation_index = index;
-      this.prepareConversation();
       this.prepareContactList();
+      this.prepareConversation();
       this.prepareMessages();
       this.toogleSideNav();
     },
 
     startConvo(user) {
-      this.to_save_convo = {
-        conversation_name: `${this.user.username}, ${user.username}`,
-        is_accepted_both: false,
-        members: [this.user, user],
-        started_by: this.user._id,
-        messages: [],
+      let existInContactList = this.contact_list.find(contact => contact._id == user._id);
+      let existInMessageReq = this.message_request.find(contact => contact._id == user._id);
+      if (existInContactList) {
+        let convo = this.getConversationBelonged(user);
+        this.conversation_index = this.conversations.indexOf(convo);
+      } else if (existInMessageReq) {
+        this.toAcceptMessageReqModal(user, 'showModal3');
+      } else {
+        this.to_save_convo = {
+          conversation_name: `${this.user.username}, ${user.username}`,
+          is_accepted_both: false,
+          members: [this.user, user],
+          started_by: this.user._id,
+          messages: [],
+        }
+
+        this.selected_conversation = this.to_save_convo;
+        this.contact_list.push(user);
+        this.conversations.push(this.to_save_convo);
+        this.conversation_index = this.conversations.length - 1;
       }
 
-      this.selected_conversation = this.to_save_convo;
-      this.contact_list.push(user);
-      this.conversations.push(this.to_save_convo);
-      this.conversation_index = this.conversations.length - 1;
       this.modals.showModal1 = false;
       this.showSideBar = false;
 
-      this.prepareConversation();
       this.prepareContactList();
+      this.prepareConversation();
       this.prepareMessages();
     },
     
     prepareContactList() {
+      this.conversations = this.user.conversations;
       this.contact_list = [];
       this.message_request = [];
       this.conversations.forEach(convo => {
@@ -304,22 +332,27 @@ export default {
     },
 
     prepareMessages() {
-      this.messages = [...this.selected_conversation.messages];
-      this.messages = this.messages.sort((a, b) => new Date(a.created_at) - new Date(b.created_at));
-
-      setTimeout(() => {
-        this.scrollUp();
-      }, 200);
+      if (Object.keys(this.selected_conversation).length) {
+        this.messages = [...this.selected_conversation.messages];
+        this.messages = this.messages.sort((a, b) => new Date(a.created_at) - new Date(b.created_at));
+  
+        setTimeout(() => {
+          this.scrollUp();
+        }, 200);
+      }
     },
 
     prepareConversation() {
-      this.conversations = this.user.conversations;
       if (Object.keys(this.to_save_convo).length) {
-        this.conversations.push(this.to_save_convo);
+        if (!this.conversations.includes(this.to_save_convo)) {
+          this.conversations.push(this.to_save_convo);
+        }
       }
 
-      this.selected_conversation = this.conversations[this.conversation_index];
-      this.conversation_name = this.selected_conversation.conversation_name;
+      if (this.contact_list.length) {
+        this.selected_conversation = this.conversations[this.conversation_index];
+        this.conversation_name = this.selected_conversation.conversation_name;
+      }
     },
 
     async saveConversation() {
@@ -327,35 +360,66 @@ export default {
       data.members = data.members.map(member => member._id);
       await apiHelper.apiRequest('/conversation', "POST", data);
       await this.requestUser(this.authUser._id);
-      this.prepareConversation();
+
       this.prepareContactList();
+      this.prepareConversation();
       this.prepareMessages();
     },
 
     async updateConversation(data) {
       await apiHelper.apiRequest(`/conversation/${this.selected_conversation?._id}`, "PATCH", data);
       await this.requestUser(this.authUser._id);
-      this.prepareConversation();
       this.prepareContactList();
+      this.prepareConversation();
       this.prepareMessages();
     },
 
     notify() {
       this.refreshSocketDatas();
-      console.log('message request!');
     },
 
-    refreshSocketDatas() {
-      this.requestAllUsers();
-      this.requestUser(this.authUser._id);
+    async refreshSocketDatas() {
+      await this.requestAllUsers();
+      await this.requestUser(this.authUser._id);
 
-      this.prepareConversation();
       this.prepareContactList();
+      this.prepareConversation();
       this.prepareMessages();
     },
 
     getRecipient(members) {
       return members.find(member => member._id !== this.user._id);
+    },
+
+    getConversationBelonged(user) {
+      return this.conversations.find(convo => {
+        let mb = convo.members.find(member => member._id == user._id);
+        if (mb) {
+          return convo;
+        }
+      });
+    },
+
+    toAcceptMessageReqModal(user, modal) {
+      this.message_rec_to_acc = this.getConversationBelonged(user);
+      this.closeModal('showModal1');
+      this.closeModal('showModal2');
+      this.showModal(modal);
+    },
+
+    async acceptMessageReq() {
+      await apiHelper.apiRequest(`/conversation/${this.message_rec_to_acc._id}`, 'PATCH', {is_accepted_both: true});
+      this.closeModal('showModal3');
+      this.conversation_index = this.conversations.indexOf(this.message_rec_to_acc);
+      this.message_rec_to_acc = {};
+
+      await this.refreshSocketDatas();
+      this.toogleSideNav();
+    },
+    
+    closeMessageReq() {
+      this.message_rec_to_acc = {};
+      this.closeModal('showModal3');
     }
   },
 
@@ -386,10 +450,10 @@ export default {
 
     // initialized conversation
     if (this.user.conversations.length) {
-      // prepare conversation
-      this.prepareConversation();
       // prepare contact list
       this.prepareContactList();
+      // prepare conversation
+      this.prepareConversation();
       // prepare messages
       this.prepareMessages();
     }
@@ -398,7 +462,24 @@ export default {
 </script>
 
 <style scoped>
-.new-chat-btn {
+.confirmation {
+  position: absolute;
+  width: 100%;
+  height: auto;
+  text-align: center;
+  top: 50%;
+  transform: translateY(-50%);
+}
+.accept-btn {
+  background-color: #8ff8b0 !important;
+}
+.cancel-btn {
+  background-color: #ffb3b3 !important; 
+}
+.accept-btn, .cancel-btn {
+  margin: 5px;
+}
+.new-chat-btn, .accept-btn, .cancel-btn {
   border: none;
   background: floralwhite;
   padding: 10px 20px;
@@ -412,6 +493,7 @@ export default {
   display: grid;
   justify-items: center;
   align-items: center;
+  height: calc(100vh - 128px);
 }
 .no-contact-view {
   position: absolute;
@@ -422,11 +504,13 @@ export default {
 }
 .close {
   position: absolute;
-  right: 0;
+  right: 10px;
   padding: 7px 11px;
   border-radius: 19px;
   cursor: pointer;
   background: #9dabab;
+  top: 10px;
+  color: white;
 }
 .user-list {
   margin: 0px 35px;
@@ -467,7 +551,7 @@ export default {
   /* display: none; */
   z-index: 5;
   width: 100vw;
-  height: 100vh;
+  height: calc(100vh + 70px);
   position: relative;
   top: calc(-70px - 100vh);
   background-color: rgba(0,0,0,0.5);
@@ -479,6 +563,7 @@ export default {
   height: 100%;
   background-color: #f2edd7;
   border-radius: 4px;
+  height: calc(100% - 70px);
 }
 
 #msg-portal {
@@ -508,7 +593,7 @@ export default {
   display: grid;
   justify-items: center;
   background-color: white !important;
-  position: fixed;
+  position: relative;
   width: 100vw;
   height: 100vh;
 }
@@ -523,15 +608,15 @@ export default {
   height: 3.5em;
   top: 70px;
   position: fixed;
-  width: 100vw;
   z-index: 1;
-  margin-top: 0px !important;
+  left: 0;
+  width: 100%;
 }
 
 #content {
   margin-top: 70px;
   width: 100%;
-  height: 100vh;
+  height: calc(100vh - 70px);
   grid-template-columns: 0.43fr 2fr;
 }
 
@@ -598,10 +683,13 @@ export default {
   /* border: solid 1px blue; */
   width: 15em;
   z-index: 1;
-  height: 100%;
+  height: calc(100% - 70px);
   background-color: #f2edd7;
   left: 0;
-  animation: slide 0.5s 1;
+  overflow-y: auto;
+  overflow-x: hidden;
+  -webkit-animation: slide-data-v-fae5bece 0.5s 1;
+  animation: slide-data-v-fae5bece 0.5s 1;
 }
 
 #convo-cont {
@@ -630,7 +718,7 @@ export default {
   position: absolute;
   /* top: 50px; */
   width: 99.68%;
-  height: calc(100% - 64px);
+  height: 100%;
   padding-top: 4em;
   background-color: white;
   overflow: auto;

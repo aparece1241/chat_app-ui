@@ -233,6 +233,7 @@ export default {
 }
 
 #online-status {
+  display: none;
   position: absolute;
   width: 12px;
   height: 12px;
@@ -261,7 +262,7 @@ a {
   width: -moz-fill-available;
   width: -o-fill-available;
   width: -ms-fill-available;
-  width: stretch;
+  width: -moz-available;
   padding: 0px 20px;
   display: grid;
   color: #f2edd7;
@@ -271,6 +272,7 @@ a {
   height: 70px;
   z-index: 2;
   top: 0;
+  left: 0;
 }
 
 .containerv2 {
