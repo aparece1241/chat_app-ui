@@ -1,5 +1,4 @@
-// let baseUrl = 'https://mstalk.herokuapp.com';
-let baseUrl = 'http://localhost:4000';
+let baseUrl = process.env.NODE_ENV == 'development' ? 'http://localhost:4000' : 'https://mstalk.onrender.com';
 const apiRequest = async (url, method='GET', props=null) => {
     
     let options = {
