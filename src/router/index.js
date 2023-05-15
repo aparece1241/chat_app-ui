@@ -54,7 +54,7 @@ router.beforeEach((to, from, next) => {
   }
 
   if(to.meta.auth) {
-    if(store.getters.getUserState['username']) {
+    if(store.getters['AuthModule/getAuthUser']['username']) {
       next();
       return;
     }

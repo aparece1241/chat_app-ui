@@ -1,20 +1,11 @@
 <template>
   <div id="header">
     <!-- If there is ang authenticated user -->
-    <div class="containerv2" v-if="user.username">
+    <div class="containerv2" v-if="!isUserObjEmpty">
       <div id="logo">
         <span id="logo-text">mstalk</span>
       </div>
       <div id="search-cont">
-        <InputField
-          type="text"
-          placeholder="Search . . ."
-          name="search"
-          v-bind:className="['search-input']"
-        />
-        <button id="search-btn">
-          <span><i class="fa fa-search" aria-hidden="true"></i></span>
-        </button>
       </div>
       <div class="user-img" v-on:click="toggleCollapsible">
         <div class="status-img-wrapper">
@@ -60,25 +51,25 @@
         </div>
         <p class="ghost-nav-item">Services</p>
         <p class="ghost-nav-item">About</p>
-        <router-link to="/sign-in" v-if="!user.username"
+        <router-link to="/sign-in" v-if="isUserObjEmpty"
           ><p class="ghost-nav-item">Sign in</p></router-link
         >
-        <router-link to="/sign-up" v-if="!user.username"
+        <router-link to="/sign-up" v-if="isUserObjEmpty"
           ><p class="ghost-nav-item">Sign up</p></router-link
         >
       </div>
     </div>
 
     <!-- If there is no authenticated user -->
-    <div class="container" v-if="!user.username">
+    <div class="container" v-if="isUserObjEmpty">
       <div id="logo">
         <span id="logo-text">mstalk</span>
       </div>
       <div id="navs">
-        <router-link to="/sign-up" v-if="!user.username"
+        <router-link to="/sign-up" v-if="isUserObjEmpty"
           ><span class="nav-item">Sign up</span></router-link
         >
-        <router-link to="/sign-in" v-if="!user.username"
+        <router-link to="/sign-in" v-if="isUserObjEmpty"
           ><span class="nav-item">Sign in</span></router-link
         >
         <span class="nav-item">About</span>
@@ -97,10 +88,10 @@
       <div id="ghost-navs" v-show="showNav">
         <p class="ghost-nav-item">Services</p>
         <p class="ghost-nav-item">About</p>
-        <router-link to="/sign-in" v-if="!user.username"
+        <router-link to="/sign-in" v-if="isUserObjEmpty"
           ><p class="ghost-nav-item">Sign in</p></router-link
         >
-        <router-link to="/sign-up" v-if="!user.username"
+        <router-link to="/sign-up" v-if="isUserObjEmpty"
           ><p class="ghost-nav-item">Sign up</p></router-link
         >
       </div>
@@ -109,23 +100,23 @@
 </template>
 
 <script>
-import store from "../store/index";
-import InputField from "../components/InputField";
 import socket from "../plugins/socketio-client";
+import { mapGetters, mapMutations } from 'vuex';
 
 export default {
   name: "Header",
-  components: {
-    InputField,
-  },
+  components: {},
   data() {
     return {
       showNav: false,
       showCollapsible: false,
-      user: {},
     };
   },
   methods: {
+    ...mapMutations({
+      resetAuthState : 'AuthModule/resetState',
+      resetUserState : 'UserModule/resetState'
+    }),
     toogleNavs() {
       this.showNav = !this.showNav;
     },
@@ -133,17 +124,20 @@ export default {
       this.showCollapsible = !this.showCollapsible;
     },
     logout() {
-      store.commit('setUserState', {});
+      this.resetAuthState();
+      this.resetUserState();
       this.$router.push({name: 'Sign-in'});
       socket.disConnectSocket();
     }
   },
-  computed: {},
+  computed: {
+    ...mapGetters({user: 'AuthModule/getAuthUser'}),
+    isUserObjEmpty() {
+      return Object.keys(this.user).length == 0;
+    }
+  },
   created() {
     },
-  mounted() {
-    this.user = store.getters.getUserState;
-  },
 };
 </script>
 
@@ -239,6 +233,7 @@ export default {
 }
 
 #online-status {
+  display: none;
   position: absolute;
   width: 12px;
   height: 12px;
@@ -267,7 +262,7 @@ a {
   width: -moz-fill-available;
   width: -o-fill-available;
   width: -ms-fill-available;
-  width: stretch;
+  width: -moz-available;
   padding: 0px 20px;
   display: grid;
   color: #f2edd7;
@@ -277,6 +272,7 @@ a {
   height: 70px;
   z-index: 2;
   top: 0;
+  left: 0;
 }
 
 .containerv2 {
@@ -317,7 +313,7 @@ a {
 .nav-item {
   float: right;
   cursor: pointer;
-  padding: 24px 25px;
+  padding: 26px 25px;
   color: #f2edd7;
 }
 

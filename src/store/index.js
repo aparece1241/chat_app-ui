@@ -2,20 +2,31 @@ import Vue from 'vue'
 import Vuex from 'vuex'
 import createPersistentState from 'vuex-persistedstate';
 
+// Import modules
+import UserModule from './users/index'
+import AuthModule from './auth/index'
+import MessageModule from './message/index'
+
 Vue.use(Vuex)
 
 export default new Vuex.Store({
   state: {
+  },
+  modules: {
+    UserModule,
+    AuthModule,
+    MessageModule
+  },
+  plugins: [createPersistentState()]
+})
+
+/**  state: {
     user: {username: ''},
-    socket: {}
   },
   getters: {
     getUserState(state) {
       return state.user;
-    },
-    getSocketState(state) {
-      return state.socket;
-    } 
+    }
   },
   mutations: {
     setUserState(state, user) {
@@ -23,11 +34,7 @@ export default new Vuex.Store({
     },
     setSocketState(state, socket) {
       state.socket = socket;
-    } 
+    }
   },
   actions: {
-  },
-  modules: {
-  },
-  plugins: [createPersistentState()]
-})
+  }, */
